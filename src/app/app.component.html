@@ -1,4 +1,4 @@
-<div nz-row>
+<!-- <div nz-row>
   <div nz-col nzSpan = "5" nzOffset = "1">
       <a routerLink = "/view">
           View directory
@@ -32,6 +32,22 @@
     </nz-dropdown-menu>
   </div>
   <div nz-col nzSpan = "17">
-    <router-outlet></router-outlet>
   </div>
-</div>
+</div> -->
+<nz-layout class="layout">
+  <nz-sider>
+    <div class="logo">IPFS Client</div>
+    <ul nz-menu nzTheme="dark" nzMode="inline">
+      <li routerLink="/view" nz-menu-item>
+        <i nz-icon nzType="file"></i>
+        <span> Files </span>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout class="right-layout">
+    <nz-content>
+      <router-outlet></router-outlet>
+    </nz-content>
+    <nz-footer>©2020 Romero Surara</nz-footer>
+  </nz-layout>
+</nz-layout>

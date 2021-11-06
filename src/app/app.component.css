@@ -1,0 +1,17 @@
+.layout {
+  min-height: 100%;
+}
+
+.logo {
+  color: white;
+  margin-top: 4rem;
+  margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  font-size: 1.4rem;
+}
+
+nz-content {
+  padding: 50px;
+}
