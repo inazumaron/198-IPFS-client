@@ -1,0 +1,24 @@
+<nz-spin [nzSpinning]="isLoading">
+  <nz-upload
+    nzType="drag"
+    [nzMultiple]="false"
+    nzAction="/api/files/upload"
+    [nzData]="{ directory: directory }"
+    [nzDirectory]="isDirectory"
+    (nzChange)="handleChange($event)"
+  >
+    <p class="ant-upload-drag-icon">
+      <i nz-icon nzType="inbox"></i>
+    </p>
+    <p *ngIf="!isDirectory" class="ant-upload-text">
+      Click or drag file to this area to upload
+    </p>
+    <p *ngIf="!isDirectory" class="ant-upload-hint">
+      Upload a single file to IPFS
+    </p>
+    <p *ngIf="isDirectory" class="ant-upload-text">
+      Click or drag folder to this area to upload
+    </p>
+    <p *ngIf="isDirectory" class="ant-upload-hint">Upload a folder to IPFS</p>
+  </nz-upload>
+</nz-spin>

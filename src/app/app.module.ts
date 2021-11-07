@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { NgZorroAntdModule, NZ_I18N, en_US } from "ng-zorro-antd";
+import { NgZorroAntdModule, NZ_I18N, en_US, NzIconModule } from "ng-zorro-antd";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -21,7 +21,8 @@ import { NzUploadModule } from "ng-zorro-antd/upload";
 import { NzInputModule } from "ng-zorro-antd/input";
 import { NzPageHeaderModule } from "ng-zorro-antd/page-header";
 import { NzBreadCrumbModule } from "ng-zorro-antd/breadcrumb";
-import { UploadComponent } from "./pages/upload/upload.component";
+import { NzModalModule } from "ng-zorro-antd/modal";
+import { UploadComponent } from "./components/upload/upload.component";
 
 registerLocaleData(en);
 
@@ -48,8 +49,11 @@ registerLocaleData(en);
     NzInputModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
+    NzIconModule,
+    NzModalModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],
+  entryComponents: [UploadComponent, PopupComponent],
 })
 export class AppModule {}

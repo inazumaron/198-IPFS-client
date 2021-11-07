@@ -15,16 +15,16 @@
     <nz-dropdown-menu #menu="nzDropdownMenu">
       <ul nz-menu>
         <li nz-menu-item>
-          <a routerLink="/upload"> File </a>
+          <a (click)="uploadFile()"> File </a>
         </li>
         <li nz-menu-item>
-          <a> Folder </a>
+          <a (click)="uploadFolder()"> Folder </a>
         </li>
         <li nz-menu-item>
-          <a> IPFS </a>
+          <a (click)="importCID()"> IPFS </a>
         </li>
         <li nz-menu-item>
-          <a routerLink="/newFolder"> New Folder </a>
+          <a (click)="makeFolder()"> New Folder </a>
         </li>
       </ul>
     </nz-dropdown-menu>
@@ -33,19 +33,35 @@
 
 <div class="breadcrumb">
   <nz-breadcrumb>
-    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
     <nz-breadcrumb-item>
-      <a>Second-level Menu</a>
+      <a (click)="navHome()"> Home </a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>Third-level Menu</nz-breadcrumb-item>
+    <nz-breadcrumb-item *ngFor="let level of levels; let i = index">
+      <a (click)="navDirectory(i)">{{ level }}</a>
+    </nz-breadcrumb-item>
   </nz-breadcrumb>
 </div>
 <br />
 
 <div class="files">
-  <nz-list nzBordered>
-    <nz-list-item *ngFor="let item of data">
-      {{ item }}
-    </nz-list-item>
-  </nz-list>
+  <nz-spin [nzSpinning]="isLoading">
+    <nz-list nzBordered>
+      <nz-list-item (click)="viewEntry(item)" *ngFor="let item of data">
+        <i
+          nz-icon
+          *ngIf="item.type == 'file'"
+          nzType="file-text"
+          nzTheme="outline"
+        ></i>
+        <i
+          nz-icon
+          *ngIf="item.type == 'directory'"
+          nzType="folder"
+          nzTheme="outline"
+        ></i>
+        &nbsp; &nbsp;
+        {{ item.name }}
+      </nz-list-item>
+    </nz-list>
+  </nz-spin>
 </div>
