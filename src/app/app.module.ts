@@ -22,6 +22,7 @@ import { NzInputModule } from "ng-zorro-antd/input";
 import { NzPageHeaderModule } from "ng-zorro-antd/page-header";
 import { NzBreadCrumbModule } from "ng-zorro-antd/breadcrumb";
 import { NzModalModule } from "ng-zorro-antd/modal";
+import { NzEmptyModule } from "ng-zorro-antd/empty";
 import { UploadComponent } from "./components/upload/upload.component";
 
 registerLocaleData(en);
@@ -51,6 +52,7 @@ registerLocaleData(en);
     NzBreadCrumbModule,
     NzIconModule,
     NzModalModule,
+    NzEmptyModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],

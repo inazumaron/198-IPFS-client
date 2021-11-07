@@ -15,16 +15,16 @@
     <nz-dropdown-menu #menu="nzDropdownMenu">
       <ul nz-menu>
         <li nz-menu-item>
-          <a (click)="uploadFile()"> File </a>
+          <a (click)="uploadFile()"> Upload File </a>
         </li>
         <li nz-menu-item>
-          <a (click)="uploadFolder()"> Folder </a>
+          <a (click)="uploadFolder()"> Upload Folder </a>
         </li>
         <li nz-menu-item>
-          <a (click)="importCID()"> IPFS </a>
+          <a (click)="importCID()"> Import from IPFS </a>
         </li>
         <li nz-menu-item>
-          <a (click)="makeFolder()"> New Folder </a>
+          <a (click)="makeFolder()"> Create Folder </a>
         </li>
       </ul>
     </nz-dropdown-menu>
@@ -45,8 +45,12 @@
 
 <div class="files">
   <nz-spin [nzSpinning]="isLoading">
-    <nz-list nzBordered>
-      <nz-list-item (click)="viewEntry(item)" *ngFor="let item of data">
+    <nz-list *ngIf="data.length" nzBordered>
+      <nz-list-item
+        *ngFor="let item of data"
+        (click)="viewEntry(item)"
+        (contextmenu)="contextMenu($event, ctxMenu, item)"
+      >
         <i
           nz-icon
           *ngIf="item.type == 'file'"
@@ -63,5 +67,28 @@
         {{ item.name }}
       </nz-list-item>
     </nz-list>
+
+    <div *ngIf="!data.length">
+      <br /><br />
+      <nz-empty
+        (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)"
+      ></nz-empty>
+    </div>
   </nz-spin>
 </div>
+
+<nz-dropdown-menu #ctxMenu="nzDropdownMenu">
+  <ul class="menu" nz-menu>
+    <li nz-menu-item (click)="view()">Download</li>
+    <li nz-menu-item (click)="copy()">Copy</li>
+    <li nz-menu-item (click)="move()">Cut</li>
+    <li nz-menu-item (click)="delete()">Delete</li>
+    <li *ngIf="clipboard != ''" (click)="paste()" nz-menu-item>Paste</li>
+  </ul>
+</nz-dropdown-menu>
+
+<nz-dropdown-menu #ctxMenuEmpty="nzDropdownMenu">
+  <ul class="menu" nz-menu>
+    <li *ngIf="clipboard != ''" (click)="paste()" nz-menu-item>Paste</li>
+  </ul>
+</nz-dropdown-menu>

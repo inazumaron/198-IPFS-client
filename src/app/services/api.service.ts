@@ -47,4 +47,13 @@ export class ApiService {
       .post(`${this.host}/files/move`, { from, to }, { withCredentials: true })
       .toPromise();
   }
+  remove(directory: string) {
+    return this.http
+      .post(
+        `${this.host}/files/remove`,
+        { directory },
+        { withCredentials: true }
+      )
+      .toPromise();
+  }
 }

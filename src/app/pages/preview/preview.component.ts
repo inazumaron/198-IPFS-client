@@ -1,6 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { async } from "@angular/core/testing";
-import { NzModalService, NzNotificationService } from "ng-zorro-antd";
+import {
+  NzContextMenuService,
+  NzDropdownMenuComponent,
+  NzModalService,
+  NzNotificationService,
+} from "ng-zorro-antd";
 import { PopupComponent } from "src/app/components/popup/popup.component";
 import { UploadComponent } from "src/app/components/upload/upload.component";
 import { ApiService, Entry } from "src/app/services/api.service";
@@ -15,10 +20,16 @@ export class PreviewComponent implements OnInit {
   levels: string[] = [];
   isLoading = false;
 
+  private paste_mode: "move" | "copy" = "copy";
+  private active_item: Entry;
+
+  clipboard = "";
+
   constructor(
     private api: ApiService,
     private modal: NzModalService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private cmenu: NzContextMenuService
   ) {}
 
   private async getFiles() {
@@ -146,5 +157,94 @@ export class PreviewComponent implements OnInit {
 
   ngOnInit() {
     this.getFiles();
+  }
+
+  contextMenu(
+    $event: MouseEvent,
+    menu: NzDropdownMenuComponent,
+    item: Entry
+  ): void {
+    this.active_item = item;
+    this.cmenu.create($event, menu);
+  }
+
+  contextMenuEmpty($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.cmenu.create($event, menu);
+  }
+
+  copy() {
+    this.paste_mode = "copy";
+    const file = `${this.levels.join("/")}/${this.active_item.name}`;
+
+    if (this.levels.length) this.clipboard = "/" + file;
+    else this.clipboard = file;
+  }
+
+  move() {
+    this.paste_mode = "move";
+    const file = `${this.levels.join("/")}/${this.active_item.name}`;
+    if (this.levels.length) this.clipboard = "/" + file;
+    else this.clipboard = file;
+  }
+
+  delete() {
+    let file_path = "";
+    const file = `${this.levels.join("/")}/${this.active_item.name}`;
+    if (this.levels.length) file_path = "/" + file;
+    else file_path = file;
+
+    this.modal.confirm({
+      nzTitle: `Delete ${this.active_item.name}?`,
+      nzContent: "Note: This can not be undone.",
+      nzOkText: "OK",
+      nzCancelText: "Cancel",
+      nzOnOk: async () => {
+        await this.deleteNow(file_path);
+      },
+    });
+  }
+
+  view() {
+    const url = `/api/files/${this.active_item.cid}`;
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = this.active_item.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  async deleteNow(file_path: string) {
+    this.isLoading = true;
+    try {
+      await this.api.remove(file_path);
+      this.getFiles();
+      this.notification.success("Success", "File deleted.");
+    } catch (err) {
+      console.error(err);
+      this.notification.error("Failed", "Something went wrong.");
+    }
+    this.isLoading = false;
+  }
+
+  async paste() {
+    this.isLoading = true;
+    try {
+      const to = "/" + this.levels.join("/");
+      if (this.paste_mode == "copy") {
+        await this.api.copy(this.clipboard, to);
+        this.notification.success("Success", "File copied.");
+      } else {
+        await this.api.move(this.clipboard, to);
+        this.notification.success("Success", "File moved.");
+        this.clipboard = "";
+      }
+      this.getFiles();
+    } catch (err) {
+      console.error(err);
+      this.notification.error("Failed", "Something went wrong.");
+    }
+    this.isLoading = false;
   }
 }
