@@ -3,8 +3,9 @@
     nzType="drag"
     [nzMultiple]="false"
     nzAction="/api/files/upload"
-    [nzData]="{ directory: directory }"
+    [nzData]="directoryData"
     [nzDirectory]="isDirectory"
+    [nzBeforeUpload]="beforeUpload"
     (nzChange)="handleChange($event)"
   >
     <p class="ant-upload-drag-icon">
