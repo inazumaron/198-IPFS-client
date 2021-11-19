@@ -1,0 +1,46 @@
+<div  class="center">
+<div nz-row>
+    <h2>Send File</h2>
+</div>
+    <div nz-row>
+        <div nz-col nzSpan="8" nzOffset="8">
+            <nz-spin [nzSpinning]="isLoading">
+                <nz-upload
+                nzType="drag"
+                [nzMultiple]="false"
+                nzAction="/api/files/upload"
+                [nzData]="directoryData"
+                [nzDirectory]="isDirectory"
+                [nzBeforeUpload]="beforeUpload"
+                (nzChange)="handleChange($event)"
+                >
+                <p class="ant-upload-drag-icon">
+                    <i nz-icon nzType="inbox"></i>
+                </p>
+                <p *ngIf="!isDirectory" class="ant-upload-text">
+                    Click or drag file to this area to upload
+                </p>
+                <p *ngIf="!isDirectory" class="ant-upload-hint">
+                    Upload a single file to IPFS
+                </p>
+                <p *ngIf="isDirectory" class="ant-upload-text">
+                    Click or drag folder to this area to upload
+                </p>
+                <p *ngIf="isDirectory" class="ant-upload-hint">Upload a folder to IPFS</p>
+                </nz-upload>
+            </nz-spin>
+        </div>
+    </div>
+    <br>
+    <div nz-row>
+        <div nz-col nzSpan="8" nzOffset="8">
+            <input nz-input placeholder="Passcode" [(ngModel)]="value" />
+        </div>
+    </div>
+    <br>
+    <div nz-row>
+        <div nz-col nzSpan="8" nzOffset="8">
+            <button nz-button nzType="default" class="btnfullw">Send</button>
+        </div>
+    </div>
+</div>

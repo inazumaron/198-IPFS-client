@@ -1,43 +1,19 @@
-<!-- <div nz-row>
-  <div nz-col nzSpan = "5" nzOffset = "1">
-      <a routerLink = "/view">
-          View directory
-      </a><br>
-    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
-      <button nz-button nzType = "primary" nzShape = "circle">+</button>
-    </a>
-    <nz-dropdown-menu #menu="nzDropdownMenu">
-        <ul nz-menu>
-            <li nz-menu-item>
-                <a routerLink="/upload">
-                File
-                </a>
-            </li>
-            <li nz-menu-item>
-                <a>
-                    Folder
-                </a>
-            </li>
-            <li nz-menu-item>
-                <a>
-                    IPFS
-                </a>
-            </li>
-            <li nz-menu-item>
-                <a routerLink="/newFolder">
-                    New Folder
-                </a>
-            </li>
-        </ul>
-    </nz-dropdown-menu>
-  </div>
-  <div nz-col nzSpan = "17">
-  </div>
-</div> -->
 <nz-layout class="layout">
   <nz-sider>
     <div class="logo">IPFS Client</div>
     <ul nz-menu nzTheme="dark" nzMode="inline">
+      <li routerLink="/main" nz-menu-item>
+        <i nz-icon nzType="home"></i>
+        <span> Home </span>
+      </li>
+      <li routerLink="/send" nz-menu-item>
+        <i nz-icon nzType="caret-right"></i>
+        <span> Send </span>
+      </li>
+      <li routerLink="/receive" nz-menu-item>
+        <i nz-icon nzType="file-unknown"></i>
+        <span> Receive </span>
+      </li>
       <li routerLink="/view" nz-menu-item>
         <i nz-icon nzType="file"></i>
         <span> Files </span>
