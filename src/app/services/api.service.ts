@@ -47,6 +47,7 @@ export class ApiService {
       .post(`${this.host}/files/move`, { from, to }, { withCredentials: true })
       .toPromise();
   }
+
   remove(directory: string) {
     return this.http
       .post(
@@ -55,5 +56,23 @@ export class ApiService {
         { withCredentials: true }
       )
       .toPromise();
+  }
+
+  pin(cid: string) {
+    return this.http
+    .post(`${this.host}/files/pin/pinata/${cid}`, { cid }, {withCredentials: true})
+    .toPromise();
+  }
+
+  unpin(cid: string) {
+    return this.http
+    .delete(`${this.host}/files/pin/pinata/${cid}`, {withCredentials: true})
+    .toPromise();
+  }
+
+  decrypt(cid: string, filename: string, passphrase: string) {
+    return this.http
+    .post(`${this.host}/files/bundle/${cid}`, { cid, filename, passphrase }, {withCredentials: true})
+    .toPromise();
   }
 }

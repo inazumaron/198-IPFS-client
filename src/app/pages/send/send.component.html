@@ -1,18 +1,26 @@
+<button nz-button type="default" (click)="back()">Back</button>
 <div  class="center">
 <div nz-row>
     <h2>Send File</h2>
 </div>
     <div nz-row>
         <div nz-col nzSpan="8" nzOffset="8">
+            
+            <div *ngIf="!canUpload">
+                Please input a valid passcode to be able to upload
+                <br>
+                Valid passcode must have a minimum of 15 characters
+            </div>
+
             <nz-spin [nzSpinning]="isLoading">
                 <nz-upload
                 nzType="drag"
                 [nzMultiple]="false"
-                nzAction="/api/files/upload"
+                nzAction="/api/files/bundle/upload/file"
                 [nzData]="directoryData"
-                [nzDirectory]="isDirectory"
                 [nzBeforeUpload]="beforeUpload"
                 (nzChange)="handleChange($event)"
+                *ngIf="canUpload"
                 >
                 <p class="ant-upload-drag-icon">
                     <i nz-icon nzType="inbox"></i>
@@ -23,10 +31,6 @@
                 <p *ngIf="!isDirectory" class="ant-upload-hint">
                     Upload a single file to IPFS
                 </p>
-                <p *ngIf="isDirectory" class="ant-upload-text">
-                    Click or drag folder to this area to upload
-                </p>
-                <p *ngIf="isDirectory" class="ant-upload-hint">Upload a folder to IPFS</p>
                 </nz-upload>
             </nz-spin>
         </div>
@@ -34,13 +38,7 @@
     <br>
     <div nz-row>
         <div nz-col nzSpan="8" nzOffset="8">
-            <input nz-input placeholder="Passcode" [(ngModel)]="value" />
-        </div>
-    </div>
-    <br>
-    <div nz-row>
-        <div nz-col nzSpan="8" nzOffset="8">
-            <button nz-button nzType="default" class="btnfullw">Send</button>
+            <input nz-input placeholder="Passcode" [(ngModel)]="passcode" (keyup)="checkPass()">
         </div>
     </div>
 </div>

@@ -12,4 +12,8 @@ export class PostReceiveComponent implements OnInit {
   ngOnInit() {
   }
 
+  back() {
+    
+  }
+
 }
