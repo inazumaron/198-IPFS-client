@@ -66,6 +66,21 @@
           nzType="folder"
           nzTheme="outline"
         ></i>
+        <i 
+          *ngIf="!item.is_pinned_pinata && item.type == 'file' && !item.is_pinned_pinata_queue"
+          nz-icon nzType="pushpin" nzTheme="outline"
+          (click)="pin(item)"
+        ></i>
+        <i 
+          *ngIf="item.is_pinned_pinata && item.type == 'file' && !item.is_pinned_pinata_queue"
+          nz-icon nzType="pushpin" nzTheme="fill"
+          (click)="unpin(item)"
+        ></i>
+        <i 
+          *ngIf="item.is_pinned_pinata_queue && item.type == 'file'"
+          nz-icon nzType="loading" nzTheme="outline"
+          (click)="queue()"
+        ></i>
         &nbsp; &nbsp;
         {{ item.name }} &mdash; &nbsp; &nbsp;
         <small>
@@ -85,7 +100,7 @@
 
 <nz-dropdown-menu #ctxMenu="nzDropdownMenu">
   <ul class="menu" nz-menu>
-    <li nz-menu-item (click)="view()">Download</li>
+    <!--<li nz-menu-item (click)="view()">Download</li>-->
     <li nz-menu-item (click)="copy()">Copy</li>
     <li nz-menu-item (click)="move()">Cut</li>
     <li nz-menu-item (click)="delete()">Delete</li>

@@ -6,6 +6,8 @@ export interface Entry {
   type: "directory" | "file";
   size: number;
   cid: string;
+  is_pinned_pinata: boolean;
+  is_pinned_pinata_queue: boolean;
 }
 
 @Injectable({
@@ -18,7 +20,7 @@ export class ApiService {
 
   getFiles(directory: string) {
     return this.http
-      .post<Entry[]>(
+      .put<Entry[]>(
         `${this.host}/files/list`,
         { directory },
         { withCredentials: true }
@@ -60,7 +62,7 @@ export class ApiService {
 
   pin(cid: string) {
     return this.http
-    .post(`${this.host}/files/pin/pinata/${cid}`, { cid }, {withCredentials: true})
+    .put(`${this.host}/files/pin/pinata/${cid}`, { cid }, {withCredentials: true})
     .toPromise();
   }
 
@@ -72,7 +74,24 @@ export class ApiService {
 
   decrypt(cid: string, filename: string, passphrase: string) {
     return this.http
-    .post(`${this.host}/files/bundle/${cid}`, { cid, filename, passphrase }, {withCredentials: true})
-    .toPromise();
+    .post(`${this.host}/files/bundle/${cid}`, { cid, filename, passphrase }, {withCredentials: true, responseType: "blob"})
+    .subscribe(resp=>{
+      this.downloadFile(resp, filename)
+    });
+  }
+
+  private downloadFile(data, fileName) {
+    const blob = new Blob([data]);
+    const url = window.URL.createObjectURL(blob);
+    //Open a new window to download
+    // window.open(url); 
+  
+    //Download by dynamically creating a tag
+    const a = document.createElement('a');
+    a.href = url;
+    // a.download = fileName;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 }

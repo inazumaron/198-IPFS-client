@@ -35,7 +35,7 @@ export class PreviewComponent implements OnInit {
   private async getFiles() {
     this.isLoading = true;
     try {
-      this.data = await this.api.getFiles("/" + this.levels.join("/"));
+      this.data = await this.api.getFiles("/"+ this.levels.join("/"));
     } finally {
       this.isLoading = false;
     }
@@ -246,5 +246,29 @@ export class PreviewComponent implements OnInit {
       this.notification.error("Failed", "Something went wrong.");
     }
     this.isLoading = false;
+  }
+
+  async pin(item) {
+    try {
+      await this.api.pin(item.cid);
+      this.notification.success("Success", "File now in queue. Please wait while it's being processed");
+    } catch (err){
+      console.error(err);
+      this.notification.error("Failed", "Pinning failed");
+    }
+  }
+
+  async unpin(item) {
+    try {
+      await this.api.unpin(item.cid);
+      this.notification.success("Success", "File unPinned.");
+    } catch (err){
+      console.error(err);
+      this.notification.error("Failed", "Failed to unpin");
+    }
+  }
+
+  queue() {
+    this.notification.error("Queuing", "Still queuing");
   }
 }
