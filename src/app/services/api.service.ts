@@ -42,7 +42,7 @@ export class ApiService {
 
   copy(from: string, to: string) {
     return this.http
-      .post(`${this.host}/files/copy`, { from, to }, { withCredentials: true })
+      .put(`${this.host}/files/copy`, { from, to }, { withCredentials: true })
       .toPromise();
   }
 
