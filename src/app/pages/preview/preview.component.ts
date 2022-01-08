@@ -35,7 +35,7 @@ export class PreviewComponent implements OnInit {
   private async getFiles() {
     this.isLoading = true;
     try {
-      this.data = await this.api.getFiles("/"+ this.levels.join("/"));
+      this.data = await this.api.getFiles("/" + this.levels.join("/"));
     } finally {
       this.isLoading = false;
     }
@@ -87,6 +87,7 @@ export class PreviewComponent implements OnInit {
   }
 
   uploadFile() {
+    console.log("/" + this.levels.join("/"));
     this.modal
       .create({
         nzTitle: "Upload File",
@@ -95,7 +96,7 @@ export class PreviewComponent implements OnInit {
         nzClosable: false,
         nzOkText: null,
         nzComponentParams: {
-          directory: "\\" + this.levels.join("\\"),
+          directory: "/" + this.levels.join("/"),
         },
       })
       .afterClose.subscribe(() => {
@@ -251,8 +252,12 @@ export class PreviewComponent implements OnInit {
   async pin(item) {
     try {
       await this.api.pin(item.cid);
-      this.notification.success("Success", "File now in queue. Please wait while it's being processed");
-    } catch (err){
+      this.notification.success(
+        "Success",
+        "File now in pin queue. Please wait while it's being processed"
+      );
+      this.getFiles();
+    } catch (err) {
       console.error(err);
       this.notification.error("Failed", "Pinning failed");
     }
@@ -261,11 +266,16 @@ export class PreviewComponent implements OnInit {
   async unpin(item) {
     try {
       await this.api.unpin(item.cid);
-      this.notification.success("Success", "File unPinned.");
-    } catch (err){
+      this.notification.success("Success", "File unpinned.");
+      this.getFiles();
+    } catch (err) {
       console.error(err);
       this.notification.error("Failed", "Failed to unpin");
     }
+  }
+
+  download(cid: string, filename: string) {
+    this.api.getFile(cid, filename);
   }
 
   queue() {
