@@ -1,20 +1,25 @@
-<div class="center">
-  <div nz-row>
-      <h2 nz-typography>IPFS Client</h2>
-  </div>
-  <br>
-  <div nz-row>
-    <a routerLink="/send"><button nz-button nzType="default" class="btnmed" >Send</button></a>
-  </div>
-  <br>
-  <div nz-row>
-    <a routerLink="/receive"><button nz-button nzType="default" class="btnmed">Receive</button></a>
-  </div>
-  <br>
-  <div nz-row>
-    <span nz-typography>
-      <a routerLink="/view">Browse</a>
-    </span>
+<div class="intro">
+  <h1>Get Started</h1>
+  <p>Please select next action to use the application.</p>
+
+  <div class="choices">
+    <div>
+      <nz-card>
+        <h3>
+          <i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Send File
+        </h3>
+        <p>Send file securely through IPFS.</p>
+        <a nz-button nzType="primary" nzBlock routerLink="/send">Send</a>
+      </nz-card>
+    </div>
+    <div>
+      <nz-card>
+        <h3>
+          <i nz-icon nzType="cloud-download" nzTheme="outline"></i> Receive File
+        </h3>
+        <p>Receive file via content identifier and passcode.</p>
+        <a nz-button nzType="primary" nzBlock routerLink="/receive">Receive</a>
+      </nz-card>
+    </div>
   </div>
 </div>
-
