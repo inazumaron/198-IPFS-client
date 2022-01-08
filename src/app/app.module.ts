@@ -3,7 +3,14 @@ import { NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { NgZorroAntdModule, NZ_I18N, en_US, NzIconModule } from "ng-zorro-antd";
+import {
+  NgZorroAntdModule,
+  NZ_I18N,
+  en_US,
+  NzIconModule,
+  NzResultModule,
+  NzAlertModule,
+} from "ng-zorro-antd";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -71,6 +78,8 @@ registerLocaleData(en);
     NzTypographyModule,
     NzCardModule,
     NzToolTipModule,
+    NzResultModule,
+    NzAlertModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],

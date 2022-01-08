@@ -1,36 +1,46 @@
-<div nz-row>
-    <div nz-col nzSpan="8" nzOffset="8" class="center">
-        <h2>File sent succesfully</h2>
-    </div>
-</div>
-<div nz-row>
-    <div nz-col nzSpan="8" nzOffset="8" class="center wbg">
-        <b>CID</b><br>
-        {{CID}}
-    </div>
-</div>
-<ng-template #copyBtn>
-    <i nz-icon nzType="copy" nzTheme="outline" (click)="copy(CID)"></i>
-</ng-template>
-<br>
-<div nz-row>
-    <div nz-col nzSpan="8" nzOffset="8" class="center wbg">
-        <b>Passcode</b><br>
-        {{Passcode}}
-    </div>
-</div>
+<nz-result
+  nzStatus="success"
+  nzTitle="File sent succesfully"
+  nzSubTitle="Please input the following details when receiving the file."
+>
+  <div nz-result-extra>
+    <div class="results">
+      <nz-card
+        nz-tooltip
+        [nzTooltipTitle]="isCopied ? 'Copied!' : 'Click to Copy'"
+        (click)="copy(CID)"
+        class="copy"
+      >
+        <b>CID</b> <br />
+        <p>
+          {{ CID }}
+        </p>
+      </nz-card>
+      <br />
+      <nz-card>
+        <b>Passcode</b> <br />
+        {{ Passcode }}
+      </nz-card>
 
-<ng-template #copyBtn2>
-    <i nz-icon nzType="copy" nzTheme="outline" (click)="copy(Passcode)"></i>
-</ng-template>
-<br>
-<div nz-row>
-    <div nz-col nzSpan="8" nzOffset="8" class="center">
-        <button nz-button (click)="pin()">
-            <i nz-icon nzType="pushpin" nzTheme="outline"></i>
-            Pin file
-        </button>
-        <br>
-        <a routerLink = "/send">Send another file</a>
+      <br /><br />
+
+      <div>
+        <a
+          nz-button
+          nzType="Primary"
+          nzBlock
+          nzType="primary"
+          routerLink="/send"
+          >Done</a
+        >
+        <br />
+        <br />
+        <a (click)="pin()">
+          <i nz-icon nzType="pushpin" nzTheme="outline"></i>
+          Pin file
+        </a>
+        &nbsp;
+      </div>
     </div>
-</div>
+  </div>
+</nz-result>
