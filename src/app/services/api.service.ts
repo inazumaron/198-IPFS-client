@@ -84,11 +84,11 @@ export class ApiService {
       .post(
         `${this.host}/files/bundle/${cid}`,
         { cid, filename, passphrase },
-        { withCredentials: true, responseType: "blob" }
+        { withCredentials: true, observe: "response", responseType: "blob" }
       )
       .subscribe(
         (resp) => {
-          this.downloadFile(resp, filename);
+          this.downloadFile(resp.body, resp.headers.get("File-Name"));
           this.decrypt_error = false;
           this.decrypt_loading = false;
         },
@@ -111,16 +111,11 @@ export class ApiService {
       });
   }
 
-  private downloadFile(data, fileName) {
+  private downloadFile(data, fileName: string) {
     const blob = new Blob([data]);
     const url = window.URL.createObjectURL(blob);
-    //Open a new window to download
-    // window.open(url);
-
-    //Download by dynamically creating a tag
     const a = document.createElement("a");
     a.href = url;
-    // a.download = fileName;
     a.download = fileName;
     a.click();
     window.URL.revokeObjectURL(url);
