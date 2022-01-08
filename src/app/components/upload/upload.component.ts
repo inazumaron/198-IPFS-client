@@ -47,7 +47,7 @@ export class UploadComponent implements OnInit {
         try {
           this.notification.error(
             "Upload Failed",
-            info.file.error.error.message[0]
+            info.file.error.error.message
           );
         } catch (err) {
           console.error(info.file.error);

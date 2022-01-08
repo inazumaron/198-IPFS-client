@@ -14,6 +14,7 @@ export class ReceiveComponent implements OnInit {
   isLoading: boolean = false;
   CID: string = "";
   passCode: string = "";
+  proceed: boolean = false;
 
   constructor(
     private api: ApiService,
@@ -32,13 +33,20 @@ export class ReceiveComponent implements OnInit {
   private async createFileFromCID() {
     this.isLoading = true;
     try {
-      this.api.decrypt(this.CID, this.CID, this.passCode);
+      console.log(this.api.decrypt(this.CID, this.CID, this.passCode));
     } catch (err) {
       console.error(err);
       this.notification.error("Failed", "Something went wrong.");
     }
-    this.isLoading = false;
-    this.route.navigate(['/received']);
+    while(this.api.decrypt_loading){
+      await new Promise(f => setTimeout(f, 100));
+    }
+    if (this.api.decryptError()){
+      this.notification.error("Failed", "Invalid passcode");
+    }else{
+      this.isLoading = false;
+      this.route.navigate(['/received']);
+    }
   }
 
 }

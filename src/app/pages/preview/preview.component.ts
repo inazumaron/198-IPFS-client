@@ -95,7 +95,7 @@ export class PreviewComponent implements OnInit {
         nzClosable: false,
         nzOkText: null,
         nzComponentParams: {
-          directory: "/" + this.levels.join("/"),
+          directory: "\\" + this.levels.join("\\"),
         },
       })
       .afterClose.subscribe(() => {

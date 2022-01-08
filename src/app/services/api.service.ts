@@ -15,6 +15,8 @@ export interface Entry {
 })
 export class ApiService {
   private readonly host = "/api";
+  decrypt_error: boolean = false;
+  decrypt_loading: boolean = true;
 
   constructor(private http: HttpClient) {}
 
@@ -73,11 +75,20 @@ export class ApiService {
   }
 
   decrypt(cid: string, filename: string, passphrase: string) {
-    return this.http
-    .post(`${this.host}/files/bundle/${cid}`, { cid, filename, passphrase }, {withCredentials: true, responseType: "blob"})
-    .subscribe(resp=>{
-      this.downloadFile(resp, filename)
-    });
+    this.decrypt_loading = true;
+      return this.http
+      .post(`${this.host}/files/bundle/${cid}`, { cid, filename, passphrase }, {withCredentials: true, responseType: "blob"})
+      .subscribe(resp=>{
+        this.downloadFile(resp, filename);
+        this.decrypt_error = false;
+        this.decrypt_loading = false;
+      },
+      err => {
+        console.error("decrypting failed");
+        this.decrypt_error = true;
+        this.decrypt_loading = false;
+      }
+      );
   }
 
   private downloadFile(data, fileName) {
@@ -93,5 +104,9 @@ export class ApiService {
     a.download = fileName;
     a.click();
     window.URL.revokeObjectURL(url);
+  }
+
+  decryptError() {
+    return this.decrypt_error;
   }
 }
