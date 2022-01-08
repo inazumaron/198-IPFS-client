@@ -201,6 +201,7 @@ export class PreviewComponent implements OnInit {
       nzCancelText: "Cancel",
       nzOnOk: async () => {
         await this.deleteNow(file_path);
+        this.getFiles();
       },
     });
   }

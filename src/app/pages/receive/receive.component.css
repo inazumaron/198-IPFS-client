@@ -1,6 +1,7 @@
 .center {
-    text-align: center;
+  margin-top: 10vh;
+  text-align: center;
 }
-.btnfullw{
-    width: 100%;
+.btnfullw {
+  width: 100%;
 }

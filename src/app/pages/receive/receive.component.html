@@ -1,23 +1,31 @@
-<button nz-button type="default" (click)="back()">Back</button>
-<div  class="center">
-    <div nz-row>
-        <h2>Receive File</h2>
+<div class="center">
+  <div nz-row>
+    <h2>Receive File</h2>
+    <p>Please input CID and password.</p>
+  </div>
+  <br />
+  <div nz-row>
+    <div nz-col nzSpan="8" nzOffset="8">
+      <input nz-input placeholder="Input CID here" [(ngModel)]="CID" />
     </div>
-        <div nz-row>
-            <div nz-col nzSpan="8" nzOffset="8">
-                <input nz-input placeholder="Input CID here" [(ngModel)]="CID" />
-            </div>
-        </div>
-        <br>
-        <div nz-row>
-            <div nz-col nzSpan="8" nzOffset="8">
-                <input nz-input placeholder="Passcode" [(ngModel)]="passCode" />
-            </div>
-        </div>
-        <br>
-        <div nz-row>
-            <div nz-col nzSpan="8" nzOffset="8">
-                <button nz-button nzType="default" class="btnfullw" (click) = "createFileFromCID()">Import</button>
-            </div>
-        </div>
+  </div>
+  <br />
+  <div nz-row>
+    <div nz-col nzSpan="8" nzOffset="8">
+      <input nz-input placeholder="Passcode" [(ngModel)]="passCode" />
     </div>
+  </div>
+  <br /><br />
+  <div nz-row>
+    <div nz-col nzSpan="8" nzOffset="8">
+      <button
+        nz-button
+        nzType="primary"
+        class="btnfullw"
+        (click)="createFileFromCID()"
+      >
+        Download
+      </button>
+    </div>
+  </div>
+</div>

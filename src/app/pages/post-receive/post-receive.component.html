@@ -1,9 +1,10 @@
-<a routerLink="/main"><button nz-button type="default">Back</button></a>
-<div class="center">
-    <h2>File has been received, download should start automatically</h2>
-    <br>
-    <br>
-    <a routerLink = "/receive">Recieve another file</a>
-    <br>
-    <a routerLink = "/view">Browse files</a>
-</div>
+<nz-result
+  nzStatus="success"
+  nzTitle="File has been received"
+  nzSubTitle="Download will start automatically."
+>
+  <div nz-result-extra>
+    <a routerLink="/receive" nz-button nzType="primary">Done</a>
+    <a routerLink="/view" nz-button>Browse Files</a>
+  </div>
+</nz-result>
