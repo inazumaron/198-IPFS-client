@@ -4,9 +4,9 @@
   nzSubtitle="Browse your IPFS files"
 >
   <nz-page-header-extra>
-    <a routerLink="/main">
+    <!-- <a routerLink="/main">
       <button nz-button type="default">back</button>
-    </a>
+    </a> -->
     <a
       nz-dropdown
       nzPlacement="bottomRight"
@@ -66,26 +66,62 @@
           nzType="folder"
           nzTheme="outline"
         ></i>
-        <i 
-          *ngIf="!item.is_pinned_pinata && item.type == 'file' && !item.is_pinned_pinata_queue"
-          nz-icon nzType="pushpin" nzTheme="outline"
-          (click)="pin(item)"
-        ></i>
-        <i 
-          *ngIf="item.is_pinned_pinata && item.type == 'file' && !item.is_pinned_pinata_queue"
-          nz-icon nzType="pushpin" nzTheme="fill"
-          (click)="unpin(item)"
-        ></i>
-        <i 
-          *ngIf="item.is_pinned_pinata_queue && item.type == 'file'"
-          nz-icon nzType="loading" nzTheme="outline"
-          (click)="queue()"
-        ></i>
+
         &nbsp; &nbsp;
         {{ item.name }} &mdash; &nbsp; &nbsp;
         <small>
           {{ item.cid }}
         </small>
+
+        <div
+          nz-tooltip
+          [nzTooltipTitle]="item.is_pinned_pinata ? 'Unpin' : 'Pin'"
+          class="actions"
+        >
+          <i
+            *ngIf="
+              !item.is_pinned_pinata &&
+              item.type == 'file' &&
+              !item.is_pinned_pinata_queue
+            "
+            nz-icon
+            nzType="pushpin"
+            nzTheme="outline"
+            (click)="pin(item)"
+          ></i>
+
+          <i
+            *ngIf="
+              item.is_pinned_pinata &&
+              item.type == 'file' &&
+              !item.is_pinned_pinata_queue
+            "
+            nz-icon
+            nzType="pushpin"
+            nzTheme="fill"
+            (click)="unpin(item)"
+          ></i>
+          <i
+            *ngIf="item.is_pinned_pinata_queue && item.type == 'file'"
+            nz-icon
+            nzType="loading"
+            nzTheme="outline"
+            (click)="queue()"
+          ></i>
+        </div>
+        <div
+          class="download-actions"
+          *ngIf="item.type == 'file'"
+          nz-tooltip
+          nzTooltipTitle="Download"
+        >
+          <i
+            (click)="download(item.cid, item.name)"
+            nz-icon
+            nzType="download"
+            nzTheme="outline"
+          ></i>
+        </div>
       </nz-list-item>
     </nz-list>
 

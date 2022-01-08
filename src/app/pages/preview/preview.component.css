@@ -12,3 +12,11 @@
 nz-list-item {
   cursor: pointer;
 }
+
+nz-list-item .actions {
+  margin-left: auto;
+}
+
+nz-list-item .download-actions {
+  margin-left: 1rem;
+}

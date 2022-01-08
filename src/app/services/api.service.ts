@@ -64,41 +64,61 @@ export class ApiService {
 
   pin(cid: string) {
     return this.http
-    .put(`${this.host}/files/pin/pinata/${cid}`, { cid }, {withCredentials: true})
-    .toPromise();
+      .put(
+        `${this.host}/files/pin/pinata/${cid}`,
+        { cid },
+        { withCredentials: true }
+      )
+      .toPromise();
   }
 
   unpin(cid: string) {
     return this.http
-    .delete(`${this.host}/files/pin/pinata/${cid}`, {withCredentials: true})
-    .toPromise();
+      .delete(`${this.host}/files/pin/pinata/${cid}`, { withCredentials: true })
+      .toPromise();
   }
 
   decrypt(cid: string, filename: string, passphrase: string) {
     this.decrypt_loading = true;
-      return this.http
-      .post(`${this.host}/files/bundle/${cid}`, { cid, filename, passphrase }, {withCredentials: true, responseType: "blob"})
-      .subscribe(resp=>{
-        this.downloadFile(resp, filename);
-        this.decrypt_error = false;
-        this.decrypt_loading = false;
-      },
-      err => {
-        console.error("decrypting failed");
-        this.decrypt_error = true;
-        this.decrypt_loading = false;
-      }
+    return this.http
+      .post(
+        `${this.host}/files/bundle/${cid}`,
+        { cid, filename, passphrase },
+        { withCredentials: true, responseType: "blob" }
+      )
+      .subscribe(
+        (resp) => {
+          this.downloadFile(resp, filename);
+          this.decrypt_error = false;
+          this.decrypt_loading = false;
+        },
+        (err) => {
+          console.error("decrypting failed");
+          this.decrypt_error = true;
+          this.decrypt_loading = false;
+        }
       );
+  }
+
+  getFile(cid: string, filename: string) {
+    return this.http
+      .get(`${this.host}/files/${cid}`, {
+        withCredentials: true,
+        responseType: "blob",
+      })
+      .subscribe((resp) => {
+        this.downloadFile(resp, filename);
+      });
   }
 
   private downloadFile(data, fileName) {
     const blob = new Blob([data]);
     const url = window.URL.createObjectURL(blob);
     //Open a new window to download
-    // window.open(url); 
-  
+    // window.open(url);
+
     //Download by dynamically creating a tag
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     // a.download = fileName;
     a.download = fileName;

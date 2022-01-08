@@ -23,15 +23,16 @@ import { NzPageHeaderModule } from "ng-zorro-antd/page-header";
 import { NzBreadCrumbModule } from "ng-zorro-antd/breadcrumb";
 import { NzModalModule } from "ng-zorro-antd/modal";
 import { NzEmptyModule } from "ng-zorro-antd/empty";
+import { NzToolTipModule } from "ng-zorro-antd/tooltip";
 import { UploadComponent } from "./components/upload/upload.component";
-import { MainComponent } from './pages/main/main.component';
-import { NzTypographyModule } from 'ng-zorro-antd/typography';
-import { SendComponent } from './pages/send/send.component';
-import { ReceiveComponent } from './pages/receive/receive.component';
-import { ErrorPageComponent } from './pages/error-page/error-page.component';
-import { PostSendComponent } from './pages/post-send/post-send.component';
-import { PostReceiveComponent } from './pages/post-receive/post-receive.component';
-import { NzCardModule } from 'ng-zorro-antd/card';
+import { MainComponent } from "./pages/main/main.component";
+import { NzTypographyModule } from "ng-zorro-antd/typography";
+import { SendComponent } from "./pages/send/send.component";
+import { ReceiveComponent } from "./pages/receive/receive.component";
+import { ErrorPageComponent } from "./pages/error-page/error-page.component";
+import { PostSendComponent } from "./pages/post-send/post-send.component";
+import { PostReceiveComponent } from "./pages/post-receive/post-receive.component";
+import { NzCardModule } from "ng-zorro-antd/card";
 
 registerLocaleData(en);
 
@@ -69,6 +70,7 @@ registerLocaleData(en);
     NzEmptyModule,
     NzTypographyModule,
     NzCardModule,
+    NzToolTipModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],
