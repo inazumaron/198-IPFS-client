@@ -1,0 +1,27 @@
+<nz-spin [nzSpinning]="isLoading">
+    <p *ngIf="!canUpload">
+      Please enter a passcode with a minimum of 15 characters to upload
+    </p>
+    <nz-upload
+      *ngIf="canUpload"
+      nzType="drag"
+      [nzMultiple]="false"
+      nzAction="/api/files/bundle/upload/file"
+      [nzData]="directoryData"
+      [nzDirectory]="isDirectory"
+      [nzBeforeUpload]="beforeUpload"
+      (nzChange)="handleChange($event)"
+    >
+      <p class="ant-upload-drag-icon">
+        <i nz-icon nzType="inbox"></i>
+      </p>
+      <p *ngIf="!isDirectory" class="ant-upload-text">
+        Click or drag file to this area to upload
+      </p>
+      <p *ngIf="!isDirectory" class="ant-upload-hint">
+        Upload a single file to IPFS
+      </p>
+    </nz-upload>
+    <input nz-input placeholder="Passcode" [(ngModel)]="passcode" (keyup)="checkPass()" />
+  </nz-spin>
+  

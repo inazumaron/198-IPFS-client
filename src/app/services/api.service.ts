@@ -88,6 +88,8 @@ export class ApiService {
       )
       .subscribe(
         (resp) => {
+          console.log("resp");
+          console.log(resp);
           this.downloadFile(resp.body, resp.headers.get("File-Name"));
           this.decrypt_error = false;
           this.decrypt_loading = false;

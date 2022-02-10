@@ -40,6 +40,8 @@ import { ErrorPageComponent } from "./pages/error-page/error-page.component";
 import { PostSendComponent } from "./pages/post-send/post-send.component";
 import { PostReceiveComponent } from "./pages/post-receive/post-receive.component";
 import { NzCardModule } from "ng-zorro-antd/card";
+import { UploadEnComponent } from './components/upload-en/upload-en.component';
+import { PopupDeComponent } from './components/popup-de/popup-de.component';
 
 registerLocaleData(en);
 
@@ -55,6 +57,8 @@ registerLocaleData(en);
     ErrorPageComponent,
     PostSendComponent,
     PostReceiveComponent,
+    UploadEnComponent,
+    PopupDeComponent,
   ],
   imports: [
     BrowserModule,
@@ -83,6 +87,6 @@ registerLocaleData(en);
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],
-  entryComponents: [UploadComponent, PopupComponent],
+  entryComponents: [UploadComponent, PopupComponent, UploadEnComponent, PopupDeComponent],
 })
 export class AppModule {}

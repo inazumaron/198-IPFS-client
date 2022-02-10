@@ -8,6 +8,8 @@ import {
 } from "ng-zorro-antd";
 import { PopupComponent } from "src/app/components/popup/popup.component";
 import { UploadComponent } from "src/app/components/upload/upload.component";
+import { PopupDeComponent } from "src/app/components/popup-de/popup-de.component";
+import { UploadEnComponent } from "src/app/components/upload-en/upload-en.component";
 import { ApiService, Entry } from "src/app/services/api.service";
 
 @Component({
@@ -31,6 +33,10 @@ export class PreviewComponent implements OnInit {
     private notification: NzNotificationService,
     private cmenu: NzContextMenuService
   ) {}
+
+  check_encrypted(name: string){
+    return name.includes(".encrypted");
+  }
 
   private async getFiles() {
     this.isLoading = true;
@@ -71,6 +77,23 @@ export class PreviewComponent implements OnInit {
     this.isLoading = false;
   }
 
+  private async createFileFromCIDDe(cid: string, passcode: string) {
+    this.isLoading = true;
+    try {
+      this.api.decrypt(cid, cid, passcode);
+    } catch (err) {
+      console.error(err);
+      this.notification.error("Failed", "Something went wrong.");
+    }
+    while (this.api.decrypt_loading) {
+      await new Promise((f) => setTimeout(f, 100));
+    }
+    if (this.api.decryptError()) {
+      this.notification.error("Failed", "Invalid passcode");
+    }
+    this.isLoading = false;
+  }
+
   navDirectory(count: number) {
     this.levels = this.levels.slice(0, count + 1);
     this.getFiles();
@@ -104,16 +127,15 @@ export class PreviewComponent implements OnInit {
       });
   }
 
-  uploadFolder() {
+  uploadFileEncrypted() {
     this.modal
       .create({
-        nzTitle: "Upload Folder",
-        nzContent: UploadComponent,
+        nzTitle: "Upload and ecrypt File",
+        nzContent: UploadEnComponent,
         nzMaskClosable: false,
         nzClosable: false,
         nzOkText: null,
         nzComponentParams: {
-          isDirectory: true,
           directory: "/" + this.levels.join("/"),
         },
       })
@@ -149,6 +171,24 @@ export class PreviewComponent implements OnInit {
       },
       nzOnOk: async () => {
         await this.createFileFromCID(ref.getContentComponent().value);
+        setTimeout(() => {
+          this.getFiles();
+        }, 1000);
+      },
+    });
+  }
+
+  importCIDDecrypted() {
+    const ref = this.modal.create({
+      nzTitle: "Import via CID",
+      nzContent: PopupDeComponent,
+      nzMaskClosable: false,
+      nzClosable: false,
+      nzComponentParams: {
+        placeholder: "CID",
+      },
+      nzOnOk: async () => {
+        await this.createFileFromCIDDe(ref.getContentComponent().value, ref.getContentComponent().passcode);
         setTimeout(() => {
           this.getFiles();
         }, 1000);

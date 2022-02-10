@@ -1,6 +1,6 @@
 <nz-page-header
   class="site-page-header"
-  nzTitle="Your Files"
+  nzTitle="Your IPFS Desktop"
   nzSubtitle="Browse your IPFS files"
 >
   <nz-page-header-extra>
@@ -13,18 +13,21 @@
       nzTrigger="click"
       [nzDropdownMenu]="menu"
     >
-      <button nz-button nzType="primary">Add +</button>
+      <button nz-button nzType="primary">IPFS operations</button>
     </a>
     <nz-dropdown-menu #menu="nzDropdownMenu">
       <ul nz-menu>
         <li nz-menu-item>
-          <a (click)="uploadFile()"> Upload File </a>
+          <a (click)="uploadFile()"> Share File </a>
         </li>
         <li nz-menu-item>
-          <a (click)="uploadFolder()"> Upload Folder </a>
+          <a (click)="uploadFileEncrypted()"> Share File (w/ password)</a>
         </li>
         <li nz-menu-item>
-          <a (click)="importCID()"> Import from IPFS </a>
+          <a (click)="importCID()"> Import File </a>
+        </li>
+        <li nz-menu-item>
+          <a (click)="importCIDDecrypted()"> Unlock CID and download</a>
         </li>
         <li nz-menu-item>
           <a (click)="makeFolder()"> Create Folder </a>
@@ -74,9 +77,21 @@
         </small>
 
         <div
+          *ngIf="item.type == 'file'"
+          nz-tooltip
+          nzTooltipTitle="Encrypted"
+          class="actions"
+        >
+          <i
+          *ngIf="check_encrypted(item.name)"
+          nz-icon nzType="lock" 
+          nzTheme="outline"></i>
+        </div>
+
+        <div
           nz-tooltip
           [nzTooltipTitle]="item.is_pinned_pinata ? 'Unpin' : 'Pin'"
-          class="actions"
+          class="download-actions"
         >
           <i
             *ngIf="

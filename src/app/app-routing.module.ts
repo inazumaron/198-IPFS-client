@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: "sent", component: PostSendComponent},
   { path: "received", component: PostReceiveComponent},
   { path: "error", component: ErrorPageComponent},
-  { path: "", redirectTo: "/main", pathMatch: "full" },
+  { path: "", redirectTo: "/view", pathMatch: "full" },
 ];
 
 @NgModule({
