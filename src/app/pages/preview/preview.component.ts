@@ -36,9 +36,10 @@ export class PreviewComponent implements OnInit {
     private cmenu: NzContextMenuService
   ) {}
     
-  ngOnInit() {
+  async ngOnInit() {
     //@ts-ignore
-    this.keyMissing = this.checkKeySet();
+    this.keyMissing = await this.checkKeySet();
+    console.log(this.keyMissing)
     if (!this.keyMissing){
       this.getFiles();
     }
@@ -56,6 +57,7 @@ export class PreviewComponent implements OnInit {
       nzOnOk: async () => {
         await this.generateKeys(ref.getContentComponent().value, ref.getContentComponent().value2);
         setTimeout(() => {
+          console.log("Key created, getting files");
           this.getFiles();
         }, 1000);
       },
@@ -65,7 +67,6 @@ export class PreviewComponent implements OnInit {
   async generateKeys(key: string, key2: string) {
     try {
       this.api.createKey(key, key2);
-      console.log("Key created");
     } catch (error) {
       console.error(error);
     }

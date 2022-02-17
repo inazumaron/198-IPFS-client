@@ -25,10 +25,11 @@ export class ApiService {
   }
 
   createKey(key: string, sKey: string) {
+    console.log(key," -- ",sKey);
     return this.http
       .post(
         `${this.host}/keys`,
-        { key, sKey },
+        { pinata_api: key, pinata_secret: sKey },
         { withCredentials: true }
       )
       .toPromise();
