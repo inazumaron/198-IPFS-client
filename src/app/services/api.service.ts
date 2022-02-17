@@ -20,6 +20,20 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+  checkKey() {
+    return this.http.get(`${this.host}/keys`, {withCredentials: true}).toPromise();
+  }
+
+  createKey(key: string, sKey: string) {
+    return this.http
+      .post(
+        `${this.host}/keys`,
+        { key, sKey },
+        { withCredentials: true }
+      )
+      .toPromise();
+  }
+
   getFiles(directory: string) {
     return this.http
       .put<Entry[]>(

@@ -11,6 +11,7 @@ import { UploadComponent } from "src/app/components/upload/upload.component";
 import { PopupDeComponent } from "src/app/components/popup-de/popup-de.component";
 import { UploadEnComponent } from "src/app/components/upload-en/upload-en.component";
 import { ApiService, Entry } from "src/app/services/api.service";
+import { KeysComponent } from "src/app/components/keys/keys.component";
 
 @Component({
   selector: "app-preview",
@@ -21,6 +22,7 @@ export class PreviewComponent implements OnInit {
   data: Entry[] = [];
   levels: string[] = [];
   isLoading = false;
+  keyMissing = false;
 
   private paste_mode: "move" | "copy" = "copy";
   private active_item: Entry;
@@ -33,6 +35,54 @@ export class PreviewComponent implements OnInit {
     private notification: NzNotificationService,
     private cmenu: NzContextMenuService
   ) {}
+    
+  ngOnInit() {
+    //@ts-ignore
+    this.keyMissing = this.checkKeySet();
+    if (!this.keyMissing){
+      this.getFiles();
+    }
+    else{
+      this.keyPrompt();
+    }
+  }
+
+  keyPrompt() {
+    const ref = this.modal.create({
+      nzTitle: "Input Pinata keys",
+      nzContent: KeysComponent,
+      nzMaskClosable: false,
+      nzClosable: false,
+      nzOnOk: async () => {
+        await this.generateKeys(ref.getContentComponent().value, ref.getContentComponent().value2);
+        setTimeout(() => {
+          this.getFiles();
+        }, 1000);
+      },
+    });
+  }
+
+  async generateKeys(key: string, key2: string) {
+    try {
+      this.api.createKey(key, key2);
+      console.log("Key created");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async checkKeySet(){
+    const temp = await this.api.checkKey();
+    console.log(temp);
+    var res = true;
+    try {
+      //@ts-ignore
+      res = temp.is_missing;
+    } catch (error) {
+      res = true;
+    }
+    return res;
+  }
 
   check_encrypted(name: string){
     return name.includes(".encrypted");
@@ -194,10 +244,6 @@ export class PreviewComponent implements OnInit {
         }, 1000);
       },
     });
-  }
-
-  ngOnInit() {
-    this.getFiles();
   }
 
   contextMenu(

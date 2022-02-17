@@ -42,6 +42,7 @@ import { PostReceiveComponent } from "./pages/post-receive/post-receive.componen
 import { NzCardModule } from "ng-zorro-antd/card";
 import { UploadEnComponent } from './components/upload-en/upload-en.component';
 import { PopupDeComponent } from './components/popup-de/popup-de.component';
+import { KeysComponent } from "./components/keys/keys.component";
 
 registerLocaleData(en);
 
@@ -59,6 +60,7 @@ registerLocaleData(en);
     PostReceiveComponent,
     UploadEnComponent,
     PopupDeComponent,
+    KeysComponent
   ],
   imports: [
     BrowserModule,
@@ -87,6 +89,6 @@ registerLocaleData(en);
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],
-  entryComponents: [UploadComponent, PopupComponent, UploadEnComponent, PopupDeComponent],
+  entryComponents: [UploadComponent, PopupComponent, UploadEnComponent, PopupDeComponent, KeysComponent],
 })
 export class AppModule {}
