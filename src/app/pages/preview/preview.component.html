@@ -27,7 +27,7 @@
           <a (click)="importCID()"> Import File </a>
         </li>
         <li nz-menu-item>
-          <a (click)="importCIDDecrypted()"> Unlock CID and download</a>
+          <a (click)="importCIDDecrypted()"> Save locally</a>
         </li>
         <li nz-menu-item>
           <a (click)="makeFolder()"> Create Folder </a>
@@ -128,7 +128,7 @@
           class="download-actions"
           *ngIf="item.type == 'file'"
           nz-tooltip
-          nzTooltipTitle="Download"
+          nzTooltipTitle="Save locally"
         >
           <i
             (click)="download(item.cid, item.name)"
