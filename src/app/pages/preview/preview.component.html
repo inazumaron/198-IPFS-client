@@ -135,6 +135,14 @@
             nz-icon
             nzType="download"
             nzTheme="outline"
+            *ngIf="!check_encrypted(item.name)"
+          ></i>
+          <i
+            (click)="downloadEncrypted(item.cid, item.name)"
+            nz-icon
+            nzType="download"
+            nzTheme="outline"
+            *ngIf="check_encrypted(item.name)"
           ></i>
         </div>
       </nz-list-item>

@@ -12,6 +12,7 @@ import { PopupDeComponent } from "src/app/components/popup-de/popup-de.component
 import { UploadEnComponent } from "src/app/components/upload-en/upload-en.component";
 import { ApiService, Entry } from "src/app/services/api.service";
 import { KeysComponent } from "src/app/components/keys/keys.component";
+import { EnDownPopupComponent } from "src/app/components/en-down-popup/en-down-popup.component";
 
 @Component({
   selector: "app-preview",
@@ -364,6 +365,27 @@ export class PreviewComponent implements OnInit {
 
   download(cid: string, filename: string) {
     this.api.getFile(cid, filename);
+  }
+
+  downloadEncrypted(cid: string, filename: string){
+    const ref = this.modal.create({
+      nzTitle: "Whoops, looks like the file you're trying to download is encrypted.",
+      nzContent: EnDownPopupComponent,
+      nzMaskClosable: false,
+      nzClosable: false,
+      nzComponentParams: {
+      },
+      nzOnOk: async () => {
+        const mode = ref.getContentComponent().skip;
+        if (!mode){await this.createFileFromCIDDe(cid, ref.getContentComponent().passcode);
+          setTimeout(() => {
+            this.getFiles();
+          }, 1000);
+        }else{
+          this.api.getFile(cid, filename);
+        }  
+      },
+    });
   }
 
   queue() {

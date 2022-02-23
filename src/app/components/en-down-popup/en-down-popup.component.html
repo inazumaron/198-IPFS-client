@@ -1,0 +1,8 @@
+<div *ngIf="!skip">
+    Please enter the passcode to download the unencrypted file
+    <input nz-input placeholder="Passcode" [(ngModel)]="passcode" class="cont"/>
+</div>
+<div *ngIf="skip" class="cont">
+    Warning, the file downloaded will still be encrypted
+</div>
+<label nz-checkbox [(ngModel)]="skip">I want the encrypted file</label>

@@ -43,6 +43,8 @@ import { NzCardModule } from "ng-zorro-antd/card";
 import { UploadEnComponent } from './components/upload-en/upload-en.component';
 import { PopupDeComponent } from './components/popup-de/popup-de.component';
 import { KeysComponent } from "./components/keys/keys.component";
+import { EnDownPopupComponent } from './components/en-down-popup/en-down-popup.component';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 registerLocaleData(en);
 
@@ -60,7 +62,8 @@ registerLocaleData(en);
     PostReceiveComponent,
     UploadEnComponent,
     PopupDeComponent,
-    KeysComponent
+    KeysComponent,
+    EnDownPopupComponent
   ],
   imports: [
     BrowserModule,
@@ -86,9 +89,10 @@ registerLocaleData(en);
     NzToolTipModule,
     NzResultModule,
     NzAlertModule,
+    NzCheckboxModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],
-  entryComponents: [UploadComponent, PopupComponent, UploadEnComponent, PopupDeComponent, KeysComponent],
+  entryComponents: [UploadComponent, PopupComponent, UploadEnComponent, PopupDeComponent, KeysComponent, EnDownPopupComponent],
 })
 export class AppModule {}
