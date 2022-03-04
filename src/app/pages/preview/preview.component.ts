@@ -12,7 +12,7 @@ import { PopupDeComponent } from "src/app/components/popup-de/popup-de.component
 import { UploadEnComponent } from "src/app/components/upload-en/upload-en.component";
 import { ApiService, Entry } from "src/app/services/api.service";
 import { KeysComponent } from "src/app/components/keys/keys.component";
-import { EnDownPopupComponent } from "src/app/components/en-down-popup/en-down-popup.component";
+import { EnDownPopupComponent } from "src/app/en-down-popup/en-down-popup.component";
 
 @Component({
   selector: "app-preview",

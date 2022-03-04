@@ -118,6 +118,7 @@ export class ApiService {
   }
 
   getFile(cid: string, filename: string) {
+    console.time("x");
     return this.http
       .get(`${this.host}/files/${cid}`, {
         withCredentials: true,
@@ -136,6 +137,7 @@ export class ApiService {
     a.download = fileName;
     a.click();
     window.URL.revokeObjectURL(url);
+    console.timeEnd("x");
   }
 
   decryptError() {
