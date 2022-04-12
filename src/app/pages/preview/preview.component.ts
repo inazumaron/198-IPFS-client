@@ -36,15 +36,14 @@ export class PreviewComponent implements OnInit {
     private notification: NzNotificationService,
     private cmenu: NzContextMenuService
   ) {}
-    
+
   async ngOnInit() {
     //@ts-ignore
     this.keyMissing = await this.checkKeySet();
-    console.log(this.keyMissing)
-    if (!this.keyMissing){
+    console.log(this.keyMissing);
+    if (!this.keyMissing) {
       this.getFiles();
-    }
-    else{
+    } else {
       this.keyPrompt();
     }
   }
@@ -56,11 +55,11 @@ export class PreviewComponent implements OnInit {
       nzMaskClosable: false,
       nzClosable: false,
       nzOnOk: async () => {
-        await this.generateKeys(ref.getContentComponent().value, ref.getContentComponent().value2);
-        setTimeout(() => {
-          console.log("Key created, getting files");
-          this.getFiles();
-        }, 1000);
+        await this.generateKeys(
+          ref.getContentComponent().value,
+          ref.getContentComponent().value2
+        );
+        this.getFiles();
       },
     });
   }
@@ -73,7 +72,7 @@ export class PreviewComponent implements OnInit {
     }
   }
 
-  async checkKeySet(){
+  async checkKeySet() {
     const temp = await this.api.checkKey();
     console.log(temp);
     var res = true;
@@ -86,7 +85,7 @@ export class PreviewComponent implements OnInit {
     return res;
   }
 
-  check_encrypted(name: string){
+  check_encrypted(name: string) {
     return name.includes(".encrypted");
   }
 
@@ -120,7 +119,8 @@ export class PreviewComponent implements OnInit {
   private async createFileFromCID(cid: string) {
     this.isLoading = true;
     try {
-      this.api.copy(`/ipfs/${cid}`, "/" + this.levels.join("/"));
+      await this.api.import(cid, "/" + this.levels.join("/"));
+      // this.api.copy(`/ipfs/${cid}`, "/" + this.levels.join("/"));
       this.notification.success("Success", "File imported.");
     } catch (err) {
       console.error(err);
@@ -223,9 +223,7 @@ export class PreviewComponent implements OnInit {
       },
       nzOnOk: async () => {
         await this.createFileFromCID(ref.getContentComponent().value);
-        setTimeout(() => {
-          this.getFiles();
-        }, 1000);
+        this.getFiles();
       },
     });
   }
@@ -240,10 +238,11 @@ export class PreviewComponent implements OnInit {
         placeholder: "CID",
       },
       nzOnOk: async () => {
-        await this.createFileFromCIDDe(ref.getContentComponent().value, ref.getContentComponent().passcode);
-        setTimeout(() => {
-          this.getFiles();
-        }, 1000);
+        await this.createFileFromCIDDe(
+          ref.getContentComponent().value,
+          ref.getContentComponent().passcode
+        );
+        this.getFiles();
       },
     });
   }
@@ -319,9 +318,15 @@ export class PreviewComponent implements OnInit {
   }
 
   async paste() {
+    const to = "/" + this.levels.join("/");
+    const dir = this.clipboard
+      .split("/")
+      .slice(0, this.clipboard.split("/").length - 1)
+      .join("/");
+    if (dir == to) return;
+
     this.isLoading = true;
     try {
-      const to = "/" + this.levels.join("/");
       if (this.paste_mode == "copy") {
         await this.api.copy(this.clipboard, to);
         this.notification.success("Success", "File copied.");
@@ -363,27 +368,31 @@ export class PreviewComponent implements OnInit {
     }
   }
 
-  download(cid: string, filename: string) {
-    this.api.getFile(cid, filename);
+  async download(cid: string, filename: string) {
+    const isEncrypted = await this.api.isEncrypted(cid);
+    if (isEncrypted) this.downloadEncrypted(cid, filename);
+    else this.api.getFile(cid, filename);
   }
 
-  downloadEncrypted(cid: string, filename: string){
+  downloadEncrypted(cid: string, filename: string) {
     const ref = this.modal.create({
-      nzTitle: "Whoops, looks like the file you're trying to download is encrypted.",
+      nzTitle:
+        "Whoops, looks like the file you're trying to download is encrypted.",
       nzContent: EnDownPopupComponent,
       nzMaskClosable: false,
       nzClosable: false,
-      nzComponentParams: {
-      },
+      nzComponentParams: {},
       nzOnOk: async () => {
         const mode = ref.getContentComponent().skip;
-        if (!mode){await this.createFileFromCIDDe(cid, ref.getContentComponent().passcode);
-          setTimeout(() => {
-            this.getFiles();
-          }, 1000);
-        }else{
+        if (!mode) {
+          await this.createFileFromCIDDe(
+            cid,
+            ref.getContentComponent().passcode
+          );
+          this.getFiles();
+        } else {
           this.api.getFile(cid, filename);
-        }  
+        }
       },
     });
   }

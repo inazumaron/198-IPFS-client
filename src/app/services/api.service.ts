@@ -7,7 +7,8 @@ export interface Entry {
   size: number;
   cid: string;
   is_pinned_pinata: boolean;
-  is_pinned_pinata_queue: boolean;
+  is_pinned_pinata_queued: boolean;
+  is_loading: boolean;
 }
 
 @Injectable({
@@ -21,11 +22,13 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   checkKey() {
-    return this.http.get(`${this.host}/keys`, {withCredentials: true}).toPromise();
+    return this.http
+      .get(`${this.host}/keys`, { withCredentials: true })
+      .toPromise();
   }
 
   createKey(key: string, sKey: string) {
-    console.log(key," -- ",sKey);
+    console.log(key, " -- ", sKey);
     return this.http
       .post(
         `${this.host}/keys`,
@@ -118,27 +121,49 @@ export class ApiService {
   }
 
   getFile(cid: string, filename: string) {
-    return this.http
-      .get(`${this.host}/files/${cid}`, {
-        withCredentials: true,
-        responseType: "blob",
-      })
-      .subscribe((resp) => {
-        this.downloadFile(resp, filename);
-      });
+    const url = `${this.host}/files/${cid}`;
+    window.open(url, "_blank").focus();
+    // return this.http
+    //   .get(`${this.host}/files/${cid}`, {
+    //     withCredentials: true,
+    //     responseType: "blob",
+    //   })
+    //   .subscribe((resp) => {
+    //     this.downloadFile(resp);
+    //   });
   }
 
-  private downloadFile(data, fileName: string) {
+  private downloadFile(data, fileName?: string) {
     const blob = new Blob([data]);
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = fileName;
+    if (fileName) a.download = fileName;
+    else a.download = "file";
     a.click();
     window.URL.revokeObjectURL(url);
   }
 
   decryptError() {
     return this.decrypt_error;
+  }
+
+  import(cid: string, directory: string) {
+    return this.http
+      .put(
+        `${this.host}/files/import/${cid}`,
+        { directory },
+        { withCredentials: true }
+      )
+      .toPromise();
+  }
+
+  isEncrypted(cid: string) {
+    return this.http
+      .get<{ is_encrypted: boolean }>(`${this.host}/files/encrypted/${cid}`, {
+        withCredentials: true,
+      })
+      .toPromise()
+      .then((x) => x.is_encrypted);
   }
 }

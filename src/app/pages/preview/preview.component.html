@@ -21,10 +21,10 @@
           <a (click)="uploadFile()"> Share File </a>
         </li>
         <li nz-menu-item>
-          <a (click)="uploadFileEncrypted()"> Share File (w/ password)</a>
+          <a (click)="uploadFileEncrypted()"> Share File Securely</a>
         </li>
         <li nz-menu-item>
-          <a (click)="importCID()"> Import File </a>
+          <a (click)="importCID()"> Receive File </a>
         </li>
         <li nz-menu-item>
           <a (click)="importCIDDecrypted()"> Save locally</a>
@@ -59,8 +59,14 @@
       >
         <i
           nz-icon
-          *ngIf="item.type == 'file'"
+          *ngIf="item.type == 'file' && !item.is_loading"
           nzType="file-text"
+          nzTheme="outline"
+        ></i>
+        <i
+          nz-icon
+          *ngIf="item.type == 'file' && item.is_loading"
+          nzType="loading"
           nzTheme="outline"
         ></i>
         <i
@@ -71,7 +77,7 @@
         ></i>
 
         &nbsp; &nbsp;
-        {{ item.name }} &mdash; &nbsp; &nbsp;
+        {{ item.is_loading ? "Importing..." : item.name }} &mdash; &nbsp; &nbsp;
         <small>
           {{ item.cid }}
         </small>
@@ -83,9 +89,11 @@
           class="actions"
         >
           <i
-          *ngIf="check_encrypted(item.name)"
-          nz-icon nzType="lock" 
-          nzTheme="outline"></i>
+            *ngIf="check_encrypted(item.name)"
+            nz-icon
+            nzType="lock"
+            nzTheme="outline"
+          ></i>
         </div>
 
         <div
@@ -97,7 +105,7 @@
             *ngIf="
               !item.is_pinned_pinata &&
               item.type == 'file' &&
-              !item.is_pinned_pinata_queue
+              !item.is_pinned_pinata_queued
             "
             nz-icon
             nzType="pushpin"
@@ -109,7 +117,7 @@
             *ngIf="
               item.is_pinned_pinata &&
               item.type == 'file' &&
-              !item.is_pinned_pinata_queue
+              !item.is_pinned_pinata_queued
             "
             nz-icon
             nzType="pushpin"
@@ -117,7 +125,7 @@
             (click)="unpin(item)"
           ></i>
           <i
-            *ngIf="item.is_pinned_pinata_queue && item.type == 'file'"
+            *ngIf="item.is_pinned_pinata_queued && item.type == 'file'"
             nz-icon
             nzType="loading"
             nzTheme="outline"
