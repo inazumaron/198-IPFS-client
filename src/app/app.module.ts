@@ -43,7 +43,7 @@ import { NzCardModule } from "ng-zorro-antd/card";
 import { UploadEnComponent } from './components/upload-en/upload-en.component';
 import { PopupDeComponent } from './components/popup-de/popup-de.component';
 import { KeysComponent } from "./components/keys/keys.component";
-import { EnDownPopupComponent } from './components/en-down-popup/en-down-popup.component';
+import { EnDownPopupComponent } from './en-down-popup/en-down-popup.component';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 registerLocaleData(en);

@@ -142,6 +142,7 @@ export class ApiService {
     else a.download = "file";
     a.click();
     window.URL.revokeObjectURL(url);
+    console.timeEnd("x");
   }
 
   decryptError() {
