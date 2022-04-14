@@ -43,6 +43,9 @@ export class PreviewComponent implements OnInit {
     console.log(this.keyMissing);
     if (!this.keyMissing) {
       this.getFiles();
+      setInterval(() => {
+        this.getFilesSilent();
+      }, 3 * 1000);
     } else {
       this.keyPrompt();
     }
@@ -95,6 +98,13 @@ export class PreviewComponent implements OnInit {
       this.data = await this.api.getFiles("/" + this.levels.join("/"));
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  private async getFilesSilent() {
+    try {
+      this.data = await this.api.getFiles("/" + this.levels.join("/"));
+    } finally {
     }
   }
 
