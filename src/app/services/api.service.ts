@@ -6,9 +6,14 @@ export interface Entry {
   type: "directory" | "file";
   size: number;
   cid: string;
-  is_pinned_pinata: boolean;
-  is_pinned_pinata_queued: boolean;
-  is_loading: boolean;
+
+  status_pin: "unpinned" | "queued" | "pinned";
+  status_content:
+    | "searching"
+    | "downloading"
+    | "timeout"
+    | "failed"
+    | "available";
 }
 
 @Injectable({

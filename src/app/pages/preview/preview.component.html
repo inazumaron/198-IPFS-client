@@ -59,25 +59,48 @@
       >
         <i
           nz-icon
-          *ngIf="item.type == 'file' && !item.is_loading"
+          *ngIf="item.type == 'file' && item.status_content == 'available'"
           nzType="file-text"
           nzTheme="outline"
         ></i>
         <i
           nz-icon
-          *ngIf="item.type == 'file' && item.is_loading"
+          *ngIf="item.type == 'directory' && item.status_content == 'available'"
+          nzType="folder"
+          nzTheme="outline"
+        ></i>
+        <i
+          nz-icon
+          *ngIf="
+            item.type == 'file' &&
+            (item.status_content == 'searching' ||
+              item.status_content == 'downloading')
+          "
           nzType="loading"
           nzTheme="outline"
         ></i>
         <i
           nz-icon
-          *ngIf="item.type == 'directory'"
-          nzType="folder"
+          *ngIf="item.type == 'failed' || item.status_content == 'timeout'"
+          nzType="close"
           nzTheme="outline"
         ></i>
 
         &nbsp; &nbsp;
-        {{ item.is_loading ? "Importing..." : item.name }} &mdash; &nbsp; &nbsp;
+        <span *ngIf="item.status_content == 'searching'">
+          Searching file on network
+        </span>
+        <span *ngIf="item.status_content == 'downloading'"> Downloading </span>
+        <span *ngIf="item.status_content == 'failed'"> Import failed </span>
+        <span *ngIf="item.status_content == 'timeout'">
+          File not found on network
+        </span>
+        <span *ngIf="item.status_content == 'available'">
+          {{ item.name }}
+        </span>
+
+        &mdash; &nbsp; &nbsp;
+
         <small>
           {{ item.cid }}
         </small>
@@ -97,35 +120,27 @@
         </div>
 
         <div
+          *ngIf="item.status_content == 'available'"
           nz-tooltip
-          [nzTooltipTitle]="item.is_pinned_pinata ? 'Unpin' : 'Pin'"
+          [nzTooltipTitle]="item.status_pin == 'unpinned' ? 'Unpin' : 'Pin'"
           class="download-actions"
         >
           <i
-            *ngIf="
-              !item.is_pinned_pinata &&
-              item.type == 'file' &&
-              !item.is_pinned_pinata_queued
-            "
+            *ngIf="item.type == 'file' && item.status_pin == 'unpinned'"
             nz-icon
             nzType="pushpin"
             nzTheme="outline"
             (click)="pin(item)"
           ></i>
-
           <i
-            *ngIf="
-              item.is_pinned_pinata &&
-              item.type == 'file' &&
-              !item.is_pinned_pinata_queued
-            "
+            *ngIf="item.type == 'file' && item.status_pin == 'pinned'"
             nz-icon
             nzType="pushpin"
             nzTheme="fill"
             (click)="unpin(item)"
           ></i>
           <i
-            *ngIf="item.is_pinned_pinata_queued && item.type == 'file'"
+            *ngIf="item.type == 'file' && item.status_pin == 'queued'"
             nz-icon
             nzType="loading"
             nzTheme="outline"
@@ -134,7 +149,7 @@
         </div>
         <div
           class="download-actions"
-          *ngIf="item.type == 'file'"
+          *ngIf="item.type == 'file' && item.status_content == 'available'"
           nz-tooltip
           nzTooltipTitle="Save locally"
         >
