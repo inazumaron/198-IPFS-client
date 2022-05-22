@@ -8,4 +8,5 @@ import { Component, Input, OnInit } from "@angular/core";
 export class PopupComponent {
   @Input() placeholder = "";
   value: string = "";
+  name: string = "";
 }

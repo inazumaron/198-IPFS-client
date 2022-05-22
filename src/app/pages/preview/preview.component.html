@@ -4,9 +4,7 @@
   nzSubtitle="Browse your IPFS files"
 >
   <nz-page-header-extra>
-    <!-- <a routerLink="/main">
-      <button nz-button type="default">back</button>
-    </a> -->
+    <i nz-icon *ngIf="lowPeers" nzType="disconnect" nzTheme="outline"></i>
     <a
       nz-dropdown
       nzPlacement="bottomRight"
@@ -101,7 +99,7 @@
 
         &mdash; &nbsp; &nbsp;
 
-        <small>
+        <small (click)="copyCID(item)">
           {{ item.cid }}
         </small>
 

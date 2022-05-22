@@ -24,6 +24,7 @@ export class PreviewComponent implements OnInit {
   levels: string[] = [];
   isLoading = false;
   keyMissing = false;
+  lowPeers : boolean = false;
 
   private paste_mode: "move" | "copy" = "copy";
   private active_item: Entry;
@@ -40,15 +41,24 @@ export class PreviewComponent implements OnInit {
   async ngOnInit() {
     //@ts-ignore
     this.keyMissing = await this.checkKeySet();
-    console.log(this.keyMissing);
     if (!this.keyMissing) {
       this.getFiles();
       setInterval(() => {
         this.getFilesSilent();
       }, 3 * 1000);
+      setInterval(()=> { this.peerCheck() },3 * 1000);
     } else {
       this.keyPrompt();
     }
+  }
+
+  async peerCheck() {
+    const x = await this.api.getPeers()
+    console.log(x);
+    if (x < 10)
+      this.lowPeers = true;
+    else
+      this.lowPeers = false;
   }
 
   keyPrompt() {
@@ -132,12 +142,14 @@ export class PreviewComponent implements OnInit {
     this.isLoading = false;
   }
 
-  private async createFileFromCID(cid: string) {
+  private async createFileFromCID(cid: string, name: string) {
     this.isLoading = true;
     try {
-      await this.api.import(cid, "/" + this.levels.join("/"));
-      // this.api.copy(`/ipfs/${cid}`, "/" + this.levels.join("/"));
-      this.notification.success("Success", "File imported.");
+      await this.api.import(cid, "/" + this.levels.join("/"), name);
+      if (this.lowPeers)
+        this.notification.error("Warning", "Import may fail due to low peer count");
+      else
+        this.notification.success("Success", "File imported.");
     } catch (err) {
       console.error(err);
       this.notification.error("Failed", "Something went wrong.");
@@ -243,7 +255,7 @@ export class PreviewComponent implements OnInit {
         placeholder: "CID",
       },
       nzOnOk: async () => {
-        await this.createFileFromCID(ref.getContentComponent().value);
+        await this.createFileFromCID(ref.getContentComponent().value, ref.getContentComponent().name);
         this.getFiles();
       },
     });

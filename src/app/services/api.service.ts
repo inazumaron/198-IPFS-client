@@ -154,7 +154,7 @@ export class ApiService {
     return this.decrypt_error;
   }
 
-  import(cid: string, directory: string) {
+  import(cid: string, directory: string, name: string) {
     return this.http
       .put(
         `${this.host}/files/import/${cid}`,
@@ -171,5 +171,10 @@ export class ApiService {
       })
       .toPromise()
       .then((x) => x.is_encrypted);
+  }
+
+  getPeers() {
+    return this.http.get(`${this.host}/peers`, { withCredentials: true })
+    .toPromise();
   }
 }
