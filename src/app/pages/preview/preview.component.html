@@ -161,6 +161,13 @@
       </nz-list-item>
     </nz-list>
 
+    <div *ngIf="data.length" (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)">
+      <br /><br />
+      <nz-empty
+        (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)"
+      ></nz-empty>
+    </div>
+
     <div
       (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)"
       *ngIf="!data.length"

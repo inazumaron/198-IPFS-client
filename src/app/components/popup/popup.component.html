@@ -1,2 +1,2 @@
-<input nz-input placeholder="File name (leave blank for default)" [(ngModel)]="name" />
+<input *ngIf="placeholder == 'CID'" nz-input placeholder="File name (leave blank for default)" [(ngModel)]="name" />
 <input nz-input [placeholder]="placeholder" [(ngModel)]="value" />
