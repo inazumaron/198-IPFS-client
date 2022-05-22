@@ -85,8 +85,14 @@ export class PreviewComponent implements OnInit {
     return res;
   }
 
-  check_encrypted(name: string) {
-    return name.includes(".encrypted");
+  async check_encrypted(cid: string) {
+    var res = false;
+    try {
+      res = await this.api.isEncrypted(cid);
+    } catch (error) {
+      res = false;
+    }
+    return res;
   }
 
   private async getFiles() {
@@ -159,6 +165,11 @@ export class PreviewComponent implements OnInit {
   viewEntry(entry: Entry) {
     if (entry.type == "directory")
       this.viewDirectory([...this.levels, entry.name]);
+  }
+
+  copyCID(entry: Entry){
+    navigator.clipboard.writeText(entry.cid);
+    this.notification.info("Note","CID copied to clipboard");
   }
 
   uploadFile() {
@@ -348,7 +359,7 @@ export class PreviewComponent implements OnInit {
       await this.api.pin(item.cid);
       this.notification.success(
         "Success",
-        "File now in pin queue. Please wait while it's being processed"
+        "File now in pin queue. Pinning may take a while to finish"
       );
       this.getFiles();
     } catch (err) {
@@ -369,7 +380,12 @@ export class PreviewComponent implements OnInit {
   }
 
   async download(cid: string, filename: string) {
-    const isEncrypted = await this.api.isEncrypted(cid);
+    var isEncrypted = false;
+    try {
+      //isEncrypted = await this.api.isEncrypted(cid);
+    } catch (error) {
+      console.log(error)
+    }
     if (isEncrypted) this.downloadEncrypted(cid, filename);
     else this.api.getFile(cid, filename);
   }

@@ -78,7 +78,7 @@
 
         &nbsp; &nbsp;
         {{ item.is_loading ? "Importing..." : item.name }} &mdash; &nbsp; &nbsp;
-        <small>
+        <small (click)="copyCID(item)">
           {{ item.cid }}
         </small>
 
@@ -89,7 +89,7 @@
           class="actions"
         >
           <i
-            *ngIf="check_encrypted(item.name)"
+            *ngIf="check_encrypted(item.cid)"
             nz-icon
             nzType="lock"
             nzTheme="outline"
@@ -143,14 +143,6 @@
             nz-icon
             nzType="download"
             nzTheme="outline"
-            *ngIf="!check_encrypted(item.name)"
-          ></i>
-          <i
-            (click)="downloadEncrypted(item.cid, item.name)"
-            nz-icon
-            nzType="download"
-            nzTheme="outline"
-            *ngIf="check_encrypted(item.name)"
           ></i>
         </div>
       </nz-list-item>
