@@ -41,7 +41,7 @@ export class UploadComponent implements OnInit {
       case "done":
         this.isLoading = false;
         this.notification.success("Success", "File successfully uploaded");
-        this.modal.close();
+        this.modal.close(true);
         break;
       case "error":
         try {
@@ -53,7 +53,7 @@ export class UploadComponent implements OnInit {
           console.error(info.file.error);
           this.notification.error("Upload Failed", "Something went wrong");
         }
-        this.modal.close();
+        this.modal.close(false);
         this.isLoading = false;
         break;
     }

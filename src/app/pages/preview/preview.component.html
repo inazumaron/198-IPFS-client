@@ -4,9 +4,7 @@
   nzSubtitle="Browse your IPFS files"
 >
   <nz-page-header-extra>
-    <!-- <a routerLink="/main">
-      <button nz-button type="default">back</button>
-    </a> -->
+    <i nz-icon *ngIf="lowPeers" nzType="disconnect" nzTheme="outline"></i>
     <a
       nz-dropdown
       nzPlacement="bottomRight"
@@ -101,7 +99,7 @@
 
         &mdash; &nbsp; &nbsp;
 
-        <small>
+        <small (click)="copyCID(item)">
           {{ item.cid }}
         </small>
 
@@ -158,18 +156,20 @@
             nz-icon
             nzType="download"
             nzTheme="outline"
-            *ngIf="!check_encrypted(item.name)"
-          ></i>
-          <i
-            (click)="downloadEncrypted(item.cid, item.name)"
-            nz-icon
-            nzType="download"
-            nzTheme="outline"
-            *ngIf="check_encrypted(item.name)"
           ></i>
         </div>
       </nz-list-item>
     </nz-list>
+
+    <div
+      *ngIf="data.length"
+      (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)"
+    >
+      <br /><br />
+      <nz-empty
+        (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)"
+      ></nz-empty>
+    </div>
 
     <div
       (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)"

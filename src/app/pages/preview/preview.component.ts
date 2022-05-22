@@ -24,6 +24,7 @@ export class PreviewComponent implements OnInit {
   levels: string[] = [];
   isLoading = false;
   keyMissing = false;
+  lowPeers : boolean = false;
 
   private paste_mode: "move" | "copy" = "copy";
   private active_item: Entry;
@@ -40,15 +41,24 @@ export class PreviewComponent implements OnInit {
   async ngOnInit() {
     //@ts-ignore
     this.keyMissing = await this.checkKeySet();
-    console.log(this.keyMissing);
     if (!this.keyMissing) {
       this.getFiles();
       setInterval(() => {
         this.getFilesSilent();
       }, 3 * 1000);
+      setInterval(()=> { this.peerCheck() },3 * 1000);
     } else {
       this.keyPrompt();
     }
+  }
+
+  async peerCheck() {
+    const x = await this.api.getPeers()
+    console.log(x);
+    if (x < 10)
+      this.lowPeers = true;
+    else
+      this.lowPeers = false;
   }
 
   keyPrompt() {
@@ -88,8 +98,14 @@ export class PreviewComponent implements OnInit {
     return res;
   }
 
-  check_encrypted(name: string) {
-    return name.includes(".encrypted");
+  async check_encrypted(cid: string) {
+    var res = false;
+    try {
+      res = await this.api.isEncrypted(cid);
+    } catch (error) {
+      res = false;
+    }
+    return res;
   }
 
   private async getFiles() {
@@ -126,12 +142,14 @@ export class PreviewComponent implements OnInit {
     this.isLoading = false;
   }
 
-  private async createFileFromCID(cid: string) {
+  private async createFileFromCID(cid: string, name: string) {
     this.isLoading = true;
     try {
-      await this.api.import(cid, "/" + this.levels.join("/"));
-      // this.api.copy(`/ipfs/${cid}`, "/" + this.levels.join("/"));
-      this.notification.success("Success", "File imported.");
+      await this.api.import(cid, "/" + this.levels.join("/"), name);
+      if (this.lowPeers)
+        this.notification.error("Warning", "Import may fail due to low peer count");
+      else
+        this.notification.success("Success", "File imported.");
     } catch (err) {
       console.error(err);
       this.notification.error("Failed", "Something went wrong.");
@@ -169,6 +187,11 @@ export class PreviewComponent implements OnInit {
   viewEntry(entry: Entry) {
     if (entry.type == "directory")
       this.viewDirectory([...this.levels, entry.name]);
+  }
+
+  copyCID(entry: Entry){
+    navigator.clipboard.writeText(entry.cid);
+    this.notification.info("Note","CID copied to clipboard");
   }
 
   uploadFile() {
@@ -232,7 +255,7 @@ export class PreviewComponent implements OnInit {
         placeholder: "CID",
       },
       nzOnOk: async () => {
-        await this.createFileFromCID(ref.getContentComponent().value);
+        await this.createFileFromCID(ref.getContentComponent().value, ref.getContentComponent().name);
         this.getFiles();
       },
     });
@@ -358,7 +381,7 @@ export class PreviewComponent implements OnInit {
       await this.api.pin(item.cid);
       this.notification.success(
         "Success",
-        "File now in pin queue. Please wait while it's being processed"
+        "File now in pin queue. Pinning may take a while to finish"
       );
       this.getFiles();
     } catch (err) {
@@ -379,7 +402,12 @@ export class PreviewComponent implements OnInit {
   }
 
   async download(cid: string, filename: string) {
-    const isEncrypted = await this.api.isEncrypted(cid);
+    var isEncrypted = false;
+    try {
+      //isEncrypted = await this.api.isEncrypted(cid);
+    } catch (error) {
+      console.log(error)
+    }
     if (isEncrypted) this.downloadEncrypted(cid, filename);
     else this.api.getFile(cid, filename);
   }
