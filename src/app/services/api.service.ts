@@ -128,7 +128,7 @@ export class ApiService {
   }
 
   getFile(cid: string, filename: string) {
-    const url = `${this.host}/files/${cid}?filename=${filename}`;
+    const url = `${this.host}/files/${cid}?name=${filename}`;
     window.open(url, "_blank").focus();
     // return this.http
     //   .get(`${this.host}/files/${cid}`, {
