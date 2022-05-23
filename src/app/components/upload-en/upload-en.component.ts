@@ -32,7 +32,7 @@ export class UploadEnComponent implements OnInit {
   }
 
   checkPass = () => {
-    if (this.passcode.length >= 8){
+    if (this.passcode.length >= 12){
       this.canUpload = true;
       this.directoryData.passphrase = this.passcode;
     }

@@ -77,6 +77,16 @@
           nzType="loading"
           nzTheme="outline"
         ></i>
+
+        <div nz-tooltip nzTooltipTitle="cancel import">
+            <i nz-icon 
+            *ngIf="item.type == 'file' &&
+            item.status_content == 'searching'"
+            nzType="close" nzTheme="outline"
+            (click)="cancelImport(item)"
+            ></i>  
+        </div>
+      
         <i
           nz-icon
           *ngIf="item.type == 'failed' || item.status_content == 'timeout'"
@@ -110,7 +120,7 @@
           class="actions"
         >
           <i
-            *ngIf="check_encrypted(item.cid)"
+            *ngIf="item.is_encrypted"
             nz-icon
             nzType="lock"
             nzTheme="outline"
@@ -161,11 +171,11 @@
       </nz-list-item>
     </nz-list>
 
-    <div *ngIf="data.length" (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)">
-      <br /><br />
-      <nz-empty
-        (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)"
-      ></nz-empty>
+    <div *ngIf="data.length < 10 && data.length" (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)" class="blankSpace">
+      <div *ngFor="let blank of blankSpace">
+        <br />
+        <br />
+      </div>
     </div>
 
     <div

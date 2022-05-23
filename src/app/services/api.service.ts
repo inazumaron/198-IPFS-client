@@ -33,7 +33,6 @@ export class ApiService {
   }
 
   createKey(key: string, sKey: string) {
-    console.log(key, " -- ", sKey);
     return this.http
       .post(
         `${this.host}/keys`,
@@ -111,14 +110,11 @@ export class ApiService {
       )
       .subscribe(
         (resp) => {
-          console.log("resp");
-          console.log(resp);
           this.downloadFile(resp.body, resp.headers.get("File-Name"));
           this.decrypt_error = false;
           this.decrypt_loading = false;
         },
         (err) => {
-          console.error("decrypting failed");
           this.decrypt_error = true;
           this.decrypt_loading = false;
         }
@@ -128,14 +124,6 @@ export class ApiService {
   getFile(cid: string, filename: string) {
     const url = `${this.host}/files/${cid}`;
     window.open(url, "_blank").focus();
-    // return this.http
-    //   .get(`${this.host}/files/${cid}`, {
-    //     withCredentials: true,
-    //     responseType: "blob",
-    //   })
-    //   .subscribe((resp) => {
-    //     this.downloadFile(resp);
-    //   });
   }
 
   private downloadFile(data, fileName?: string) {
@@ -147,7 +135,6 @@ export class ApiService {
     else a.download = "file";
     a.click();
     window.URL.revokeObjectURL(url);
-    console.timeEnd("x");
   }
 
   decryptError() {
@@ -158,8 +145,8 @@ export class ApiService {
     return this.http
       .put(
         `${this.host}/files/import/${cid}`,
-        { directory },
-        { withCredentials: true }
+        { directory, name },
+        { withCredentials: true}
       )
       .toPromise();
   }
@@ -175,6 +162,11 @@ export class ApiService {
 
   getPeers() {
     return this.http.get(`${this.host}/peers`, { withCredentials: true })
+    .toPromise();
+  }
+
+  cancelImport(cid: string) {
+    return this.http.delete(`${this.host}/files/import/${cid}`, { withCredentials: true })
     .toPromise();
   }
 }

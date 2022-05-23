@@ -25,6 +25,7 @@ export class PreviewComponent implements OnInit {
   isLoading = false;
   keyMissing = false;
   lowPeers : boolean = false;
+  blankSpace: number[] = [];
 
   private paste_mode: "move" | "copy" = "copy";
   private active_item: Entry;
@@ -54,7 +55,6 @@ export class PreviewComponent implements OnInit {
 
   async peerCheck() {
     const x = await this.api.getPeers()
-    console.log(x);
     if (x < 10)
       this.lowPeers = true;
     else
@@ -98,23 +98,19 @@ export class PreviewComponent implements OnInit {
     return res;
   }
 
-  async check_encrypted(cid: string) {
-    var res = false;
-    try {
-      res = await this.api.isEncrypted(cid);
-    } catch (error) {
-      res = false;
-    }
-    return res;
-  }
-
   private async getFiles() {
     this.isLoading = true;
     try {
       this.data = await this.api.getFiles("/" + this.levels.join("/"));
     } finally {
       this.isLoading = false;
+      this.computeBlankSpace();
     }
+  }
+
+  computeBlankSpace() {
+    if(this.data.length < 10)
+      this.blankSpace = Array(10 - this.data.length).fill(0);
   }
 
   private async getFilesSilent() {
@@ -290,6 +286,7 @@ export class PreviewComponent implements OnInit {
   }
 
   contextMenuEmpty($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    console.log(this.active_item);
     this.cmenu.create($event, menu);
   }
 
@@ -404,7 +401,7 @@ export class PreviewComponent implements OnInit {
   async download(cid: string, filename: string) {
     var isEncrypted = false;
     try {
-      //isEncrypted = await this.api.isEncrypted(cid);
+      isEncrypted = await this.api.isEncrypted(cid);
     } catch (error) {
       console.log(error)
     }
@@ -437,5 +434,11 @@ export class PreviewComponent implements OnInit {
 
   queue() {
     this.notification.error("Queuing", "Still queuing");
+  }
+
+  async cancelImport(item) {
+    this.notification.info("Import cancelling","starting");
+    let res = await this.api.cancelImport(item.cid);
+    this.notification.info("Import cancelling",res.toString());
   }
 }
