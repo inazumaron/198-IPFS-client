@@ -14,6 +14,8 @@ export interface Entry {
     | "timeout"
     | "failed"
     | "available";
+
+  is_encrypted: boolean;
 }
 
 @Injectable({
@@ -122,7 +124,7 @@ export class ApiService {
   }
 
   getFile(cid: string, filename: string) {
-    const url = `${this.host}/files/${cid}`;
+    const url = `${this.host}/files/${cid}?name=${filename}`;
     window.open(url, "_blank").focus();
   }
 
