@@ -305,6 +305,22 @@ export class PreviewComponent implements OnInit {
     else this.clipboard = file;
   }
 
+  rename() {
+    const ref = this.modal.create({
+      nzTitle: "Rename",
+      nzContent: PopupComponent,
+      nzMaskClosable: false,
+      nzClosable: false,
+      nzComponentParams: {
+        placeholder: "File name",
+      },
+      nzOnOk: async () => {
+        let res = ref.getContentComponent().value;
+        await this.api.rename(this.levels.join("/"), this.active_item.name ,res);
+      },
+    });
+  }
+
   delete() {
     let file_path = "";
     const file = `${this.levels.join("/")}/${this.active_item.name}`;

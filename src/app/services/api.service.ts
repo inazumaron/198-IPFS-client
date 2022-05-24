@@ -76,6 +76,14 @@ export class ApiService {
       .toPromise();
   }
 
+  rename(path: string, oldName: string, name: string) {
+    let from = `${path}/${oldName}`;
+    let to = `${path}/${name}`;
+    return this.http
+      .post(`${this.host}/files/move`, { from, to }, { withCredentials: true })
+      .toPromise();
+  }
+
   remove(directory: string) {
     return this.http
       .post(
