@@ -4,14 +4,40 @@
   nzSubtitle="Browse your IPFS files"
 >
   <nz-page-header-extra>
-    <i nz-icon *ngIf="lowPeers" nzType="disconnect" nzTheme="outline"></i>
+    <span>
+      <small nz-tooltip nzTooltipTitle="Network Status">
+        {{ lowPeers ? "DISCONNECTED" : "CONNECTED" }} &nbsp;
+      </small>
+      <nz-badge
+        nz-tooltip
+        nzTooltipTitle="Active Peers"
+        nzStandalone
+        nzShowZero
+        [nzCount]="peers"
+        [nzStyle]="
+          peers > peer_threshold
+            ? {
+                backgroundColor: '#52c41a'
+              }
+            : {
+                backgroundColor: '#fff',
+                color: '#999',
+                boxShadow: '0 0 0 1px #d9d9d9 inset'
+              }
+        "
+      ></nz-badge>
+    </span>
+    &nbsp; &nbsp;
+
     <a
       nz-dropdown
       nzPlacement="bottomRight"
       nzTrigger="click"
       [nzDropdownMenu]="menu"
     >
-      <button nz-button nzType="primary">IPFS operations</button>
+      <button nz-button nzType="primary">
+        IPFS Operations <i nz-icon nzType="caret-down" nzTheme="outline"></i>
+      </button>
     </a>
     <nz-dropdown-menu #menu="nzDropdownMenu">
       <ul nz-menu>
@@ -24,9 +50,9 @@
         <li nz-menu-item>
           <a (click)="importCID()"> Receive File </a>
         </li>
-        <li nz-menu-item>
+        <!-- <li nz-menu-item>
           <a (click)="importCIDDecrypted()"> Save locally</a>
-        </li>
+        </li> -->
         <li nz-menu-item>
           <a (click)="makeFolder()"> Create Folder </a>
         </li>
@@ -52,21 +78,9 @@
     <nz-list *ngIf="data.length" nzBordered>
       <nz-list-item
         *ngFor="let item of data"
-        (click)="viewEntry(item)"
         (contextmenu)="contextMenu($event, ctxMenu, item)"
+        (dblclick)="viewEntry(item)"
       >
-        <i
-          nz-icon
-          *ngIf="item.type == 'file' && item.status_content == 'available'"
-          nzType="file-text"
-          nzTheme="outline"
-        ></i>
-        <i
-          nz-icon
-          *ngIf="item.type == 'directory' && item.status_content == 'available'"
-          nzType="folder"
-          nzTheme="outline"
-        ></i>
         <i
           nz-icon
           *ngIf="
@@ -78,46 +92,78 @@
           nzTheme="outline"
         ></i>
 
-        <div nz-tooltip nzTooltipTitle="cancel import">
-            <i nz-icon 
-            *ngIf="item.type == 'file' &&
-            item.status_content == 'searching'"
-            nzType="close" nzTheme="outline"
-            (click)="cancelImport(item)"
-            ></i>  
-        </div>
-      
         <i
           nz-icon
-          *ngIf="item.type == 'failed' || item.status_content == 'timeout'"
+          *ngIf="
+            item.status_content == 'failed' || item.status_content == 'timeout'
+          "
           nzType="close"
           nzTheme="outline"
         ></i>
 
-        &nbsp; &nbsp;
         <span *ngIf="item.status_content == 'searching'">
-          Searching file on network
+          &nbsp; &nbsp; Searching file on network
         </span>
-        <span *ngIf="item.status_content == 'downloading'"> Downloading </span>
-        <span *ngIf="item.status_content == 'failed'"> Import failed </span>
+        <span *ngIf="item.status_content == 'downloading'">
+          &nbsp; &nbsp; Downloading
+        </span>
+        <span *ngIf="item.status_content == 'failed'">
+          &nbsp; &nbsp;Import failed
+        </span>
         <span *ngIf="item.status_content == 'timeout'">
-          File not found on network
+          &nbsp; &nbsp; File not found on network
         </span>
-        <span *ngIf="item.status_content == 'available'">
+        <span
+          class="clickable"
+          (click)="viewEntry(item)"
+          *ngIf="item.status_content == 'available'"
+        >
+          <i
+            nz-icon
+            *ngIf="item.type == 'file' && item.status_content == 'available'"
+            nzType="file-text"
+            nzTheme="outline"
+          ></i>
+          <i
+            nz-icon
+            *ngIf="
+              item.type == 'directory' && item.status_content == 'available'
+            "
+            nzType="folder"
+            nzTheme="outline"
+          ></i>
+          &nbsp; &nbsp;
           {{ item.name }}
         </span>
 
-        &mdash; &nbsp; &nbsp;
-
-        <small (click)="copyCID(item)">
+        <small
+          class="cid"
+          nz-tooltip
+          nzTooltipTitle="Copy CID"
+          (click)="copyCID(item)"
+        >
+          &nbsp; &nbsp; &mdash; &nbsp; &nbsp;
           {{ item.cid }}
         </small>
+
+        <div
+          class="download-actions"
+          *ngIf="
+            item.type == 'file' &&
+            (item.status_content == 'available' ||
+              item.status_content == 'downloading')
+          "
+          nz-tooltip
+          nzTooltipTitle="File Size"
+        >
+          <small>{{ item.size | prettyBytes }}</small>
+        </div>
 
         <div
           *ngIf="item.type == 'file'"
           nz-tooltip
           nzTooltipTitle="Encrypted"
-          class="actions"
+          class="download-actions"
         >
           <i
             *ngIf="item.is_encrypted"
@@ -155,6 +201,7 @@
             (click)="queue()"
           ></i>
         </div>
+
         <div
           class="download-actions"
           *ngIf="item.type == 'file' && item.status_content == 'available'"
@@ -168,10 +215,32 @@
             nzTheme="outline"
           ></i>
         </div>
+
+        <div
+          class="download-actions"
+          *ngIf="
+            item.type == 'file' &&
+            (item.status_content == 'downloading' ||
+              item.status_content == 'searching')
+          "
+          nz-tooltip
+          nzTooltipTitle="Cancel"
+        >
+          <i
+            nz-icon
+            nzType="close"
+            nzTheme="outline"
+            (click)="cancelImport(item)"
+          ></i>
+        </div>
       </nz-list-item>
     </nz-list>
 
-    <div *ngIf="data.length < 10 && data.length" (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)" class="blankSpace">
+    <div
+      (contextmenu)="contextMenuEmpty($event, ctxMenuEmpty)"
+      class="blankSpace"
+      *ngIf="data.length && data.length < 10"
+    >
       <div *ngFor="let blank of blankSpace">
         <br />
         <br />
@@ -198,11 +267,17 @@
     <li nz-menu-item (click)="delete()">Delete</li>
     <li nz-menu-item (click)="rename()">Rename</li>
     <li *ngIf="clipboard != ''" (click)="paste()" nz-menu-item>Paste</li>
+    <li nz-menu-item>
+      <a (click)="makeFolder()"> Create Folder </a>
+    </li>
   </ul>
 </nz-dropdown-menu>
 
 <nz-dropdown-menu #ctxMenuEmpty="nzDropdownMenu">
   <ul class="menu" nz-menu>
     <li *ngIf="clipboard != ''" (click)="paste()" nz-menu-item>Paste</li>
+    <li nz-menu-item>
+      <a (click)="makeFolder()"> Create Folder </a>
+    </li>
   </ul>
 </nz-dropdown-menu>

@@ -12,15 +12,33 @@
 nz-list-item {
   cursor: pointer;
 }
-
+/* 
 nz-list-item .actions {
   margin-left: auto;
-}
+} */
 
 nz-list-item .download-actions {
   margin-left: 1rem;
 }
+nz-list-item .download-actions:first-of-type {
+  margin-left: auto;
+}
 
-/* .blankSpace {
-  background-color: aquamarine;
-} */
+.blankSpace {
+  cursor: pointer;
+}
+
+.high-peer {
+  background-color: #52c41a;
+}
+
+.clickable:hover {
+  color: #1a9cc4;
+}
+
+.cid {
+  color: rgb(150, 150, 150);
+}
+.cid:hover {
+  color: rgb(105, 105, 105);
+}

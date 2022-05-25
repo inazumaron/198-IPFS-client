@@ -156,7 +156,7 @@ export class ApiService {
       .put(
         `${this.host}/files/import/${cid}`,
         { directory, name },
-        { withCredentials: true}
+        { withCredentials: true }
       )
       .toPromise();
   }
@@ -171,12 +171,18 @@ export class ApiService {
   }
 
   getPeers() {
-    return this.http.get(`${this.host}/peers`, { withCredentials: true })
-    .toPromise();
+    return this.http
+      .get<number>(`${this.host}/peers`, { withCredentials: true })
+      .toPromise();
   }
 
-  cancelImport(cid: string) {
-    return this.http.delete(`${this.host}/files/import/${cid}`, { withCredentials: true })
-    .toPromise();
+  cancelImport(cid: string, directory: string) {
+    return this.http
+      .put(
+        `${this.host}/files/import/cancel/${cid}`,
+        { directory },
+        { withCredentials: true }
+      )
+      .toPromise();
   }
 }

@@ -20,11 +20,14 @@ import { EnDownPopupComponent } from "src/app/en-down-popup/en-down-popup.compon
   styleUrls: ["./preview.component.css"],
 })
 export class PreviewComponent implements OnInit {
+  readonly peer_threshold = 10;
+
   data: Entry[] = [];
   levels: string[] = [];
   isLoading = false;
   keyMissing = false;
-  lowPeers : boolean = false;
+  lowPeers: boolean = true;
+  peers = 0;
   blankSpace: number[] = [];
 
   private paste_mode: "move" | "copy" = "copy";
@@ -40,25 +43,24 @@ export class PreviewComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    //@ts-ignore
     this.keyMissing = await this.checkKeySet();
     if (!this.keyMissing) {
       this.getFiles();
       setInterval(() => {
         this.getFilesSilent();
       }, 3 * 1000);
-      setInterval(()=> { this.peerCheck() },3 * 1000);
+      setInterval(() => {
+        this.peerCheck();
+      }, 3 * 1000);
     } else {
       this.keyPrompt();
     }
   }
 
   async peerCheck() {
-    const x = await this.api.getPeers()
-    if (x < 10)
-      this.lowPeers = true;
-    else
-      this.lowPeers = false;
+    const x = await this.api.getPeers();
+    this.peers = x;
+    this.lowPeers = x < this.peer_threshold;
   }
 
   keyPrompt() {
@@ -109,7 +111,7 @@ export class PreviewComponent implements OnInit {
   }
 
   computeBlankSpace() {
-    if(this.data.length < 10)
+    if (this.data.length < 10)
       this.blankSpace = Array(10 - this.data.length).fill(0);
   }
 
@@ -139,13 +141,16 @@ export class PreviewComponent implements OnInit {
   }
 
   private async createFileFromCID(cid: string, name: string) {
+    if (!cid) return this.notification.error("Failed", "Empty CID");
     this.isLoading = true;
     try {
       await this.api.import(cid, "/" + this.levels.join("/"), name);
       if (this.lowPeers)
-        this.notification.error("Warning", "Import may fail due to low peer count");
-      else
-        this.notification.success("Success", "File imported.");
+        this.notification.warning(
+          "Warning",
+          "Import may fail due to low peer count"
+        );
+      else this.notification.success("Success", "File imported.");
     } catch (err) {
       console.error(err);
       this.notification.error("Failed", "Something went wrong.");
@@ -182,12 +187,15 @@ export class PreviewComponent implements OnInit {
 
   viewEntry(entry: Entry) {
     if (entry.type == "directory")
-      this.viewDirectory([...this.levels, entry.name]);
+      return this.viewDirectory([...this.levels, entry.name]);
+
+    if (entry.status_content != "available") return;
+    this.download(entry.cid, entry.name);
   }
 
-  copyCID(entry: Entry){
+  copyCID(entry: Entry) {
     navigator.clipboard.writeText(entry.cid);
-    this.notification.info("Note","CID copied to clipboard");
+    this.notification.success("Success", "CID copied to clipboard");
   }
 
   uploadFile() {
@@ -251,8 +259,11 @@ export class PreviewComponent implements OnInit {
         placeholder: "CID",
       },
       nzOnOk: async () => {
-        await this.createFileFromCID(ref.getContentComponent().value, ref.getContentComponent().name);
-        this.getFiles();
+        await this.createFileFromCID(
+          ref.getContentComponent().value,
+          ref.getContentComponent().name
+        );
+        this.getFilesSilent();
       },
     });
   }
@@ -281,12 +292,12 @@ export class PreviewComponent implements OnInit {
     menu: NzDropdownMenuComponent,
     item: Entry
   ): void {
+    if (item.status_content != "available") return;
     this.active_item = item;
     this.cmenu.create($event, menu);
   }
 
   contextMenuEmpty($event: MouseEvent, menu: NzDropdownMenuComponent): void {
-    console.log(this.active_item);
     this.cmenu.create($event, menu);
   }
 
@@ -316,7 +327,12 @@ export class PreviewComponent implements OnInit {
       },
       nzOnOk: async () => {
         let res = ref.getContentComponent().value;
-        await this.api.rename(this.levels.join("/"), this.active_item.name ,res);
+        await this.api.rename(
+          this.levels.join("/"),
+          this.active_item.name,
+          res
+        );
+        await this.getFilesSilent();
       },
     });
   }
@@ -358,7 +374,9 @@ export class PreviewComponent implements OnInit {
       this.notification.success("Success", "File deleted.");
     } catch (err) {
       console.error(err);
-      this.notification.error("Failed", "Something went wrong.");
+      if (this.active_item.type == "directory")
+        this.notification.error("Failed", "Folder is not empty");
+      else this.notification.error("Failed", "Can not delete file.");
     }
     this.isLoading = false;
   }
@@ -419,7 +437,7 @@ export class PreviewComponent implements OnInit {
     try {
       isEncrypted = await this.api.isEncrypted(cid);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
     if (isEncrypted) this.downloadEncrypted(cid, filename);
     else this.api.getFile(cid, filename);
@@ -453,8 +471,8 @@ export class PreviewComponent implements OnInit {
   }
 
   async cancelImport(item) {
-    this.notification.info("Import cancelling","starting");
-    let res = await this.api.cancelImport(item.cid);
-    this.notification.info("Import cancelling",res.toString());
+    await this.api.cancelImport(item.cid, "/" + this.levels.join("/"));
+    await this.getFilesSilent();
+    this.notification.success("Success", "Import cancelled.");
   }
 }

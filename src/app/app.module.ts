@@ -19,6 +19,8 @@ import en from "@angular/common/locales/en";
 import { PreviewComponent } from "./pages/preview/preview.component";
 import { PopupComponent } from "./components/popup/popup.component";
 
+import { NzTagModule } from "ng-zorro-antd/tag";
+import { NzBadgeModule } from "ng-zorro-antd/badge";
 import { NzListModule } from "ng-zorro-antd/list";
 import { NzGridModule } from "ng-zorro-antd/grid";
 import { NzButtonModule } from "ng-zorro-antd/button";
@@ -40,11 +42,12 @@ import { ErrorPageComponent } from "./pages/error-page/error-page.component";
 import { PostSendComponent } from "./pages/post-send/post-send.component";
 import { PostReceiveComponent } from "./pages/post-receive/post-receive.component";
 import { NzCardModule } from "ng-zorro-antd/card";
-import { UploadEnComponent } from './components/upload-en/upload-en.component';
-import { PopupDeComponent } from './components/popup-de/popup-de.component';
+import { UploadEnComponent } from "./components/upload-en/upload-en.component";
+import { PopupDeComponent } from "./components/popup-de/popup-de.component";
 import { KeysComponent } from "./components/keys/keys.component";
-import { EnDownPopupComponent } from './en-down-popup/en-down-popup.component';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { EnDownPopupComponent } from "./en-down-popup/en-down-popup.component";
+import { NzCheckboxModule } from "ng-zorro-antd/checkbox";
+import { PrettyBytesPipe } from './pipes/pretty-bytes.pipe';
 
 registerLocaleData(en);
 
@@ -63,7 +66,8 @@ registerLocaleData(en);
     UploadEnComponent,
     PopupDeComponent,
     KeysComponent,
-    EnDownPopupComponent
+    EnDownPopupComponent,
+    PrettyBytesPipe,
   ],
   imports: [
     BrowserModule,
@@ -90,9 +94,17 @@ registerLocaleData(en);
     NzResultModule,
     NzAlertModule,
     NzCheckboxModule,
+    NzBadgeModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],
-  entryComponents: [UploadComponent, PopupComponent, UploadEnComponent, PopupDeComponent, KeysComponent, EnDownPopupComponent],
+  entryComponents: [
+    UploadComponent,
+    PopupComponent,
+    UploadEnComponent,
+    PopupDeComponent,
+    KeysComponent,
+    EnDownPopupComponent,
+  ],
 })
 export class AppModule {}
