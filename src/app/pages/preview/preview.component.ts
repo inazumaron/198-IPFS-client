@@ -20,7 +20,7 @@ import { EnDownPopupComponent } from "src/app/en-down-popup/en-down-popup.compon
   styleUrls: ["./preview.component.css"],
 })
 export class PreviewComponent implements OnInit {
-  readonly peer_threshold = 10;
+  readonly peer_threshold = 3;
 
   data: Entry[] = [];
   levels: string[] = [];
