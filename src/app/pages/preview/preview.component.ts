@@ -45,16 +45,20 @@ export class PreviewComponent implements OnInit {
   async ngOnInit() {
     this.keyMissing = await this.checkKeySet();
     if (!this.keyMissing) {
-      this.getFiles();
-      setInterval(() => {
-        this.getFilesSilent();
-      }, 3 * 1000);
-      setInterval(() => {
-        this.peerCheck();
-      }, 3 * 1000);
+      this.startPolling();
     } else {
       this.keyPrompt();
     }
+  }
+
+  private startPolling() {
+    this.getFiles();
+    setInterval(() => {
+      this.getFilesSilent();
+    }, 3 * 1000);
+    setInterval(() => {
+      this.peerCheck();
+    }, 3 * 1000);
   }
 
   async peerCheck() {
@@ -70,18 +74,21 @@ export class PreviewComponent implements OnInit {
       nzMaskClosable: false,
       nzClosable: false,
       nzOnOk: async () => {
-        await this.generateKeys(
-          ref.getContentComponent().value,
-          ref.getContentComponent().value2
-        );
-        this.getFiles();
+        try {
+          await this.generateKeys(
+            ref.getContentComponent().value,
+            ref.getContentComponent().value2
+          );
+        } finally {
+          this.startPolling();
+        }
       },
     });
   }
 
   async generateKeys(key: string, key2: string) {
     try {
-      this.api.createKey(key, key2);
+      await this.api.createKey(key, key2);
     } catch (error) {
       console.error(error);
     }
